@@ -1,10 +1,6 @@
-#include <time.h>
-#include <stdlib.h>
-#include <float.h>
-#include <math.h>
 #include <string.h>
 #include <iostream>
-#include "geradoraleatorio.hpp"
+#include "GeradorAleatorio.hpp"
 
 
 int main(int argc, char* argv[])
