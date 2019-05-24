@@ -1,15 +1,18 @@
 #ifndef GERADORALEATORIO
 #define GERADORALEATORIO
+
 #include <time.h>
+#include <iostream>
 #include <stdlib.h>
 #include <float.h>
 #include <math.h>
 
+
 namespace GeradorAleatorio {
 
-	bool inicializado = false;
+	static bool inicializado = false;
     
-	void Inicializa(unsigned int seed) {
+	static void Inicializa(unsigned int seed) {
 		if (!inicializado) {
 			srand(seed);
 			inicializado = true;
@@ -19,14 +22,14 @@ namespace GeradorAleatorio {
 		}
 	}
 
-	double Uniforme01() {
+	static double Uniforme01() {
 		//Obtemos um valor aleatório inteiro e realizamos cast para um número real.
 		double aleatorio = (double)rand();
 		//Normalizamos em relação ao maior valor possível para obter um número entre 0 e 1.
 		return aleatorio / RAND_MAX;
 	}
 
-	double Exponencial(double lambda) {
+	static double Exponencial(double lambda) {
 		//Variável uniforme para gerar uma amostra da exponencial invertendo a PDF
 		double uniforme = Uniforme01();
 		//

@@ -3,4 +3,4 @@ BINARIES = bin
 SOURCE = src
 
 default:
-	$(CC) $(SOURCE)/*.cpp -o $(BINARIES)/main
+	$(CC) $(SOURCE)/*.cpp -o $(BINARIES)/main -Wall

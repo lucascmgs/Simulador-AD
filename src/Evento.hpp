@@ -1,6 +1,6 @@
 #ifndef EVENTO
 #define EVENTO
-#include "Fregues.hpp"
+
 
 enum class TipoEvento{
     CHEGADA, SAIDA
@@ -11,7 +11,7 @@ class Evento {
     double TempoOcorrencia;
     TipoEvento Tipo;
 
-    Evento(double tempo, TipoEvento tipoEvento);
+    Evento(TipoEvento tipoEvento, double tempo);
     friend bool operator<(Evento evento1, Evento evento2);
 };
 
