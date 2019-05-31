@@ -7,7 +7,7 @@
 #include "Evento.hpp"
 #include "GeradorAleatorio.hpp"
 
-
+//Atribuimos um Tipo à fila correspondente à sua política de atendimento
 enum class TipoFila {
     FCFS, LCFS
 };
@@ -15,9 +15,13 @@ enum class TipoFila {
 class FilaMM1{
     public:
     TipoFila Tipo;
-    double Utilizacao;    
+    //Taxa de utilização da fila, igual a λ*E[X], ou seja, ρ 
+    double Utilizacao;
+    //Variável que mantém o tempo da fila    
     double TempoAtual;
+    //Lista de fregueses presentes na fila
     std::list<Fregues> Fregueses;
+    //Heap de eventos que ocorrem na fila
     std::priority_queue<Evento> Eventos;
 
     FilaMM1(TipoFila tipo, double utilizacao);
