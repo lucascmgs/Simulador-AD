@@ -31,49 +31,17 @@ int main(int argc, char* argv[])
     GeradorAleatorio::Inicializa(seed);
     
 
+	FilaMM1 fila = FilaMM1(TipoFila::FCFS, lambda);
 
-	
-	
-	FilaMM1 fila(TipoFila::FCFS, lambda);
 	fila.InicializaFila();
-	int iVazio;
 
-	double tempoMedioEspera = 0.0;
 
-	double vazio;
-	double vazioTotal = 0.0;
-
-	double numPessoas = 0.0;
-	double numPessoasTotal = 0.0;
-
-	for (size_t i = 0; i < k; i++)
-	{
-		if(fila.Fregueses.size() == 0){
-			iVazio = i;
-			vazio = fila.TempoAtual;
-		}
-
-		if(fila.Fregueses.size() > 0){
-			if(i - iVazio == 1){
-				vazioTotal += fila.TempoAtual - vazio;
-			}
-		}
-
-		numPessoas = fila.Fregueses.size();
-
-		double tempo = fila.TempoAtual;
-		fila.TrataProximoEvento();
-
-		double novoTempo = fila.TempoAtual;
-
-		numPessoasTotal += numPessoas * (novoTempo - tempo);
-		
+	for(int i = 0; i < k; i++){
+	 	fila.TrataProximoEvento();
 	}
 
-	numPessoasTotal = numPessoasTotal /fila.TempoAtual;
-	double ocupado = 1 - vazioTotal/fila.TempoAtual;
-
-	std::cout<< numPessoasTotal << std::endl;
-	std::cout<< ocupado << std::endl;
+	std::cout << fila.TempoMedioDeEsperaNaFila() << std::endl;
+	std::cout << fila.TempoMedioDeAtendimento() << std::endl;
+	std::cout << fila.TempoMedioDeEsperaTotal() << std::endl;
 }
 
