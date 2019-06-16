@@ -93,6 +93,11 @@ void FilaMM1::GeraProximaSaida(){
 
 //Gera estatísticas relevantes do freguês (a implementar)
 void FilaMM1::GeraEstatistica(Fregues fregues){
+    // //tempo de espera (média e variância)
+    // Wij = fregues.TempoDeEntradaEmServico - fregues.TempoChegada;
+
+    
+    // //número de pessoas na fila (média e variância)
     
 }
 
