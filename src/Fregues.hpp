@@ -1,6 +1,6 @@
 #ifndef FREGUES
 #define FREGUES
-
+#include <iostream>
 //Classe do Freguês, com informações pertinentes
 class Fregues {
     public:
@@ -11,6 +11,7 @@ class Fregues {
     //Tempo em que o Freguês saiu da fila. Podemos calcular o tempo de serviço com (TempoSaida - TempoDeEntradaEmServiço)
     double TempoSaida;
     Fregues(double tempoChegada);
+    friend std::ostream& operator<<(std::ostream& os, const Fregues& fregues);
 };
 
 #endif

@@ -11,3 +11,19 @@ Evento::Evento(TipoEvento tipoEvento, double tempo){
 bool operator<(const Evento evento1, const Evento evento2){
     return evento2.TempoOcorrencia < evento1.TempoOcorrencia;
 }
+
+std::ostream& operator<<(std::ostream& os, const Evento& evento)
+{
+    std::string tipo;
+
+    if(evento.Tipo == TipoEvento::CHEGADA){
+        tipo = "CHEGADA";
+    }
+    if(evento.Tipo == TipoEvento::SAIDA){
+        tipo = "SAÍDA";
+    }
+
+
+  return os << "Evento { tipo: " << tipo 
+        << ", ocorrência: " << evento.TempoOcorrencia << " }";
+}

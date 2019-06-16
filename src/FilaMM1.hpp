@@ -19,7 +19,10 @@ class FilaMM1{
     double Utilizacao;
     //Variável que mantém o tempo da fila    
     double TempoAtual;
-    //Lista de fregueses presentes na fila
+
+    //Fregues que está atualmente em serviço
+    Fregues freguesEmServico = Fregues(-1);
+    //Lista de fregueses presentes na fila de espera
     std::list<Fregues> Fregueses;
     //Heap de eventos que ocorrem na fila
     std::priority_queue<Evento> Eventos;
@@ -27,10 +30,26 @@ class FilaMM1{
     FilaMM1(TipoFila tipo, double utilizacao);
     void InicializaFila();
     void TrataProximoEvento();
+	void ReportaStatus();
+    double TempoMedioDeEsperaNaFila();
+    double TempoMedioDeAtendimento();
+    double TempoMedioDeEsperaTotal();
+
+    private:
+    double temposDeEsperaNaFila = 0.0;
+    double temposDeAtendimento = 0.0;
+    double temposDeEsperaTotal = 0.0;
+    double tempoOcupado = 0.0;
+    int quantidadeSaidas = 0;
+
     void GeraProximaChegada();
     void GeraProximaSaida();
+    void PreparaNovoServico();
     void GeraEstatistica(Fregues fregues);
-	void ReportaStatus();
+    bool FilaVazia();
+    bool TemServico();
+    bool FilaDeEsperaVazia();
+
 };
 
 

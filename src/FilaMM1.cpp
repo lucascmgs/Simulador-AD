@@ -7,69 +7,52 @@ FilaMM1::FilaMM1(TipoFila tipo, double utilizacao){
 }
 
 void FilaMM1::TrataProximoEvento(){
-	//this->ReportaStatus();
-    //Obtemos o próximo evento a ser tratado e o removemos da heap de eventos.
+    //Pega próximo evento da heap de eventos e o remove da heap
     Evento proximoEvento = this->Eventos.top();
     this->Eventos.pop();
-    //Avançamos o tempo de simulação para o tempo de ocorrência do evento sendo tratado
+    
+    //Avança tempo de simulação para o tempo do próximo evento
     this->TempoAtual = proximoEvento.TempoOcorrencia;
 
-    //Realizamos o tratamento referente ao tipo específico de evento, seja chegada ou saída da fila.
-    switch (proximoEvento.Tipo)
-    {
-        case TipoEvento::CHEGADA :
-            //Se a fila estiver vazia quando um freguês chega, devemos gerar o tempo que o freguês irá levar para sair.
-            if(this->Fregueses.empty()){
+    //Tratamos o evento de maneira correspondente ao seu tipo
+    switch(proximoEvento.Tipo){
+        case TipoEvento::CHEGADA : {
+            //Criamos um novo freguês 
+            Fregues novoFregues = Fregues(this->TempoAtual);
+
+            //Se a fila está vazia, colocamos o freguês em serviço e geramos sua saída. Caso contrário, colocamos ele na fila de espera.
+            if(this->FilaVazia()){
+                novoFregues.TempoDeEntradaEmServico = this->TempoAtual;
+                this->freguesEmServico = novoFregues;
+                this->GeraProximaSaida();
+            } else {
+                this->Fregueses.push_front(novoFregues);
+            }
+            //Gera a chegada do próximo freguês
+            this->GeraProximaChegada();
+            break;
+        }
+        case TipoEvento::SAIDA : {
+            //Atribuimos um tempo de saída para o freguês que está saindo
+            this->freguesEmServico.TempoSaida = this->TempoAtual;
+            //Geramos as estatísticas obtidas com a saíde desse freguês
+            this->GeraEstatistica(this->freguesEmServico);
+
+            //Retiramos o freguês de serviço
+            this->freguesEmServico = Fregues(-1);
+
+            //Checamos se há mais freguêses para serem servidos e colocamos o próximo freguês em serviço se for o caso
+            this->PreparaNovoServico();
+
+            //Se colocamos um novo freguês em serviço, geramos o evento de saída dele.
+            if(this->TemServico()){
                 this->GeraProximaSaida();
             }
-            //Acrescentamos o freguês à lista de fregueses
-            this->Fregueses.push_front(Fregues(this->TempoAtual));
-            //Se a fila estava vazia quando o freguês chegou, ou seja, se após uma chegada o número de pessoas no sistema é 1,
-            //o freguês entra em serviço imediatamente.
-			if (this->Fregueses.size() == 1) {
-				this->Fregueses.front().TempoDeEntradaEmServico = this->TempoAtual;
-			}
-            //Geramos a próxima chegada.
-			this->GeraProximaChegada();
-            break;
-    
-        case TipoEvento::SAIDA:
-            //Criamos um freguês que será uma cópia do freguês a sair da fila
-            Fregues freguesDeSaida = Fregues(0);
-            //Para cada política de atendimento removemos um freguês da fila do lado correspondente da fila de fregueses
-            switch(this->Tipo){
-                case TipoFila::FCFS :
-                    //No caso FCFS, removemos o freguês da parte de trás da fila, que é o que está a mais tempo na fila.
-                    freguesDeSaida = this->Fregueses.back();
-                    this->Fregueses.pop_back();
-                    //Se após uma saída ainda tem fregueses na fila, colocamos em serviço o próximo freguês que está há mais tempo na fila. 
-					if (this->Fregueses.size() > 0) {
-						this->Fregueses.back().TempoDeEntradaEmServico = this->TempoAtual;
-					}
-                    break;
-                case TipoFila::LCFS :
-                    //No caso LCFS, removemos o freguês da frente da fila, ou seja, o que está em espera há menos tempo.
-                    freguesDeSaida = this->Fregueses.front();
-                    this->Fregueses.pop_front();
-                    //De forma análoga à FCFS, atribuímos um tempo de entrada em serviço ao próximo freguês, caso haja algum
-					if (this->Fregueses.size() > 0) {
-						this->Fregueses.front().TempoDeEntradaEmServico = this->TempoAtual;
-					}
-                    break;
-            }
 
-            //Atribuímos um tempo de saída ao freguês removido.
-            freguesDeSaida.TempoSaida = this->TempoAtual;
-            
-            //Geramos estatísticas relevantes.
-            this->GeraEstatistica(freguesDeSaida);
-
-            //Se a fila não está vazia, devemos gerar o tempo de saída do freguês que está sendo servido atualmente.
-            if(!this->Fregueses.empty()){
-                this->GeraProximaSaida();
-            }
             break;
+        }
     }
+
 }
 
 void FilaMM1::InicializaFila(){
@@ -87,10 +70,11 @@ void FilaMM1::GeraProximaChegada(){
 //Gera o próximo evento de saída
 void FilaMM1::GeraProximaSaida(){
     //Calcula de forma análoga à chegada o tempo da próxima saída, com taxa igual a 1 e acrescentamos um novo evento de saída à heap
-	double tempoProximaSaida = GeradorAleatorio::Exponencial(1) + this->TempoAtual;
+	double tempoProximaSaida = GeradorAleatorio::Exponencial(1.0) + this->TempoAtual;
 	this->Eventos.push(Evento(TipoEvento::SAIDA, tempoProximaSaida));
 }
 
+<<<<<<< HEAD
 //Gera estatísticas relevantes do freguês (a implementar)
 void FilaMM1::GeraEstatistica(Fregues fregues){
     // //tempo de espera (média e variância)
@@ -101,8 +85,81 @@ void FilaMM1::GeraEstatistica(Fregues fregues){
     
 }
 
+=======
+>>>>>>> 00066ac3e218aa5e0fbab121841f36f068d5d524
 //Imprime informações sobre o estado da fila (apenas pra efeitos de debug, depois será removido)
 void FilaMM1::ReportaStatus() {
 	std::cout << "A fila possui " << this->Fregueses.size() << " fregueses e esta funcionando ha " << this->TempoAtual << " segundos." << std::endl;
 	std::cout << "Lista com " << this->Eventos.size() << " eventos" << std::endl;
+}
+
+//Gera estatísticas relevantes do freguês (a implementar)
+void FilaMM1::GeraEstatistica(Fregues fregues){
+    //std::cout<<fregues << std::endl;
+    this->quantidadeSaidas++;
+    this->temposDeEsperaNaFila += (fregues.TempoDeEntradaEmServico - fregues.TempoChegada);
+    this->temposDeAtendimento += (fregues.TempoSaida - fregues.TempoDeEntradaEmServico);
+    this->temposDeEsperaTotal += (fregues.TempoSaida - fregues.TempoChegada);
+}
+
+double FilaMM1::TempoMedioDeEsperaNaFila(){
+    return this->temposDeEsperaNaFila/this->quantidadeSaidas;
+}
+
+double FilaMM1::TempoMedioDeAtendimento(){
+    return this->temposDeAtendimento/this->quantidadeSaidas;
+}
+
+double FilaMM1::TempoMedioDeEsperaTotal(){
+    return this->temposDeEsperaTotal/this->quantidadeSaidas;
+}
+
+
+
+//Métodos privados
+
+//Checa se a fila de fregueses está vazia e não há ninguém no servidor
+bool FilaMM1::FilaVazia(){
+    if(this->Fregueses.empty() && this->freguesEmServico.TempoChegada == -1.0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//Checa se a fila de fregueses está vazia
+bool FilaMM1::FilaDeEsperaVazia(){
+    if(this->Fregueses.empty()){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//Checa se tem alguém em serviço
+bool FilaMM1::TemServico(){
+    if(this->freguesEmServico.TempoChegada == -1){
+        return false;
+    } else {
+        return true;
+    }
+}
+
+//Escolhe novo freguês para ser servido de acordo com a política de atendimento
+void FilaMM1::PreparaNovoServico(){
+    if(!this->FilaDeEsperaVazia()){
+        switch(this->Tipo){
+            case TipoFila::FCFS : {
+                this->freguesEmServico = this->Fregueses.back();
+                this->Fregueses.pop_back();
+                break;
+            }
+            case TipoFila::LCFS : {
+                this->freguesEmServico = this->Fregueses.front();
+                this->Fregueses.pop_front();
+                break;
+            }
+        }
+        this->freguesEmServico.TempoDeEntradaEmServico = this->TempoAtual;
+    }
 }
