@@ -52,7 +52,6 @@ void FilaMM1::TrataProximoEvento(){
             break;
         }
     }
-
 }
 
 void FilaMM1::InicializaFila(){
@@ -74,19 +73,6 @@ void FilaMM1::GeraProximaSaida(){
 	this->Eventos.push(Evento(TipoEvento::SAIDA, tempoProximaSaida));
 }
 
-<<<<<<< HEAD
-//Gera estatísticas relevantes do freguês (a implementar)
-void FilaMM1::GeraEstatistica(Fregues fregues){
-    // //tempo de espera (média e variância)
-    // Wij = fregues.TempoDeEntradaEmServico - fregues.TempoChegada;
-
-    
-    // //número de pessoas na fila (média e variância)
-    
-}
-
-=======
->>>>>>> 00066ac3e218aa5e0fbab121841f36f068d5d524
 //Imprime informações sobre o estado da fila (apenas pra efeitos de debug, depois será removido)
 void FilaMM1::ReportaStatus() {
 	std::cout << "A fila possui " << this->Fregueses.size() << " fregueses e esta funcionando ha " << this->TempoAtual << " segundos." << std::endl;
@@ -98,10 +84,12 @@ void FilaMM1::GeraEstatistica(Fregues fregues){
     //std::cout<<fregues << std::endl;
     this->quantidadeSaidas++;
     this->temposDeEsperaNaFila += (fregues.TempoDeEntradaEmServico - fregues.TempoChegada);
+    this->quadradosDosTemposDeEsperaNaFila += pow((fregues.TempoDeEntradaEmServico - fregues.TempoChegada), 2);
     this->temposDeAtendimento += (fregues.TempoSaida - fregues.TempoDeEntradaEmServico);
     this->temposDeEsperaTotal += (fregues.TempoSaida - fregues.TempoChegada);
 }
 
+//Cálculo do estimador da média do tempo de espera na fila de uma rodada (EWi)
 double FilaMM1::TempoMedioDeEsperaNaFila(){
     return this->temposDeEsperaNaFila/this->quantidadeSaidas;
 }
@@ -114,7 +102,11 @@ double FilaMM1::TempoMedioDeEsperaTotal(){
     return this->temposDeEsperaTotal/this->quantidadeSaidas;
 }
 
-
+//Cálculo do estimador da variância do tempo de espera na fila de uma rodada (VWi)
+double FilaMM1::VarianciaDoTempoDeEsperaNaFila(){
+    int n = this->quantidadeSaidas;
+    return this->quadradosDosTemposDeEsperaNaFila/(n-1) - pow(this->temposDeEsperaNaFila, 2)/(n*(n-1));
+}
 
 //Métodos privados
 

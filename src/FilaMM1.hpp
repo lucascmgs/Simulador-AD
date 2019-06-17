@@ -34,9 +34,11 @@ class FilaMM1{
     double TempoMedioDeEsperaNaFila();
     double TempoMedioDeAtendimento();
     double TempoMedioDeEsperaTotal();
+    double VarianciaDoTempoDeEsperaNaFila();
 
     private:
     double temposDeEsperaNaFila = 0.0;
+    double quadradosDosTemposDeEsperaNaFila = 0.0;
     double temposDeAtendimento = 0.0;
     double temposDeEsperaTotal = 0.0;
     double tempoOcupado = 0.0;
