@@ -18,7 +18,7 @@ namespace GeradorAleatorio {
 			inicializado = true;
 		}
 		else {
-			// std::cout << "Gerador de números aleatórios já inicializado!" << std::endl;
+			 std::cout << "Gerador de números aleatórios já inicializado!" << std::endl;
 		}
 	}
 
