@@ -15,19 +15,29 @@ void Simulacao::RodaSimulacao() {
 	fila.InicializaFila();
 
 	for (int i = 0; i < this->n; i++){
-		for(int j = 0; j < this->k; j++){ //TODO: esse k nao é atualmente igual ao numero de estatisticas coletadas!!!
+		while(fila.EstatisticasColetadas < k) {
 			fila.TrataProximoEvento();
 		}
+		//TODO: Criar Rodada.hpp e Rodada.cpp pra isolar lógica e estatísticas da rodada
+
 		//fim da rodada
-		EWRodada += fila.TempoMedioDeAtendimento();
-		EWRodada2 += pow(fila.TempoMedioDeAtendimento(), 2);
+		EWRodada += fila.TempoMedioDeEsperaNaFila();
+		EWRodada2 += fila.TempoMedioDeEsperaNaFila()*fila.TempoMedioDeEsperaNaFila();
 		VWRodada += fila.VarianciaDoTempoDeEsperaNaFila();
 		VWRodada2 += pow(fila.VarianciaDoTempoDeEsperaNaFila(), 2);
 
-		//TODO: zerar as estatísticas referentes a uma rodada ao trocar de rodada
+		std::cout << "---- FIM DA RODADA " << i << " ----" << std::endl;
+		std::cout << "est coletadas: " << fila.EstatisticasColetadas << std::endl;
+		std::cout << "EWRodada: " << EWRodada << std::endl;
+		std::cout << "EWRodada2: " << EWRodada2 << std::endl;
+		std::cout << "VWRodada: " << VWRodada << std::endl;
+		std::cout << "VWRodada2: " << VWRodada2 << std::endl;
+		fila.ResetaEstatisticasRodada();
+
 		//TODO: determinar fim do período transiente (plotar e ver no olhômetro?)
 	}
 	//fim da simulação
+	std::cout << "---- FIM DA SIMULACAO " << " ----" << std::endl;
     GeraEstatisticaSimulacao();
     GeraIntervaloDeConfianca();
 }
@@ -39,7 +49,8 @@ void Simulacao::GeraEstatisticaSimulacao() {
 	EVW = VWRodada/n;
 	VVW = VWRodada2/(n-1) - pow(VWRodada, 2)/(n*(n-1));
     
-	std::cout << "EEW: " << EEW << std::endl;
+	std::cout << "Valor Analítico para EEW: " << Lambda/(1-Lambda) << std::endl;
+	std::cout << "EEW estimado: " << EEW << std::endl;
 	std::cout << "VEW: " << VEW << std::endl;
 	std::cout << "EVW: " << EVW << std::endl;
 	std::cout << "VVW: " << VVW << std::endl;
@@ -51,12 +62,12 @@ void Simulacao::GeraIntervaloDeConfianca() {
     //Para E[W]
 	Lower = EEW - t * sqrt(VEW)/sqrt(n);
 	Upper = EEW + t * sqrt(VEW)/sqrt(n);
-	std::cout << "IC E[W]: [" << Lower << ", " << EEW << ", " << Upper << "]" << std::endl;
+	// std::cout << "IC E[W]: [" << Lower << ", " << EEW << ", " << Upper << "]" << std::endl;
 
     //Para V(W)
 	Lower = EVW - t * sqrt(VVW)/sqrt(n);
 	Upper = EVW + t * sqrt(VVW)/sqrt(n);
-	std::cout << "IC V[W]: [" << Lower << ", " << EVW << ", " << Upper << "]" << std::endl;   
+	// std::cout << "IC V[W]: [" << Lower << ", " << EVW << ", " << Upper << "]" << std::endl;   
 
     //TODO: Para E[Nq] 
 
