@@ -19,6 +19,8 @@ class FilaMM1{
     double Utilizacao;
     //Variável que mantém o tempo da fila    
     double TempoAtual;
+    //Número de estatísticas já coletadas numa rodada
+    int EstatisticasColetadas = 0;
 
     //Fregues que está atualmente em serviço
     Fregues freguesEmServico = Fregues(-1);
@@ -31,16 +33,18 @@ class FilaMM1{
     void InicializaFila();
     void TrataProximoEvento();
 	void ReportaStatus();
+    void ResetaEstatisticasRodada();
     double TempoMedioDeEsperaNaFila();
     double TempoMedioDeAtendimento();
     double TempoMedioDeEsperaTotal();
+    double VarianciaDoTempoDeEsperaNaFila();
 
     private:
     double temposDeEsperaNaFila = 0.0;
+    double quadradosDosTemposDeEsperaNaFila = 0.0;
     double temposDeAtendimento = 0.0;
     double temposDeEsperaTotal = 0.0;
     double tempoOcupado = 0.0;
-    int quantidadeSaidas = 0;
 
     void GeraProximaChegada();
     void GeraProximaSaida();
@@ -49,7 +53,6 @@ class FilaMM1{
     bool FilaVazia();
     bool TemServico();
     bool FilaDeEsperaVazia();
-
 };
 
 

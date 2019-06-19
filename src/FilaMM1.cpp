@@ -52,7 +52,6 @@ void FilaMM1::TrataProximoEvento(){
             break;
         }
     }
-
 }
 
 void FilaMM1::InicializaFila(){
@@ -83,25 +82,45 @@ void FilaMM1::ReportaStatus() {
 //Gera estatísticas relevantes do freguês (a implementar)
 void FilaMM1::GeraEstatistica(Fregues fregues){
     //std::cout<<fregues << std::endl;
-    this->quantidadeSaidas++;
+    this->EstatisticasColetadas++;
     this->temposDeEsperaNaFila += (fregues.TempoDeEntradaEmServico - fregues.TempoChegada);
+    this->quadradosDosTemposDeEsperaNaFila += pow((fregues.TempoDeEntradaEmServico - fregues.TempoChegada), 2);
     this->temposDeAtendimento += (fregues.TempoSaida - fregues.TempoDeEntradaEmServico);
     this->temposDeEsperaTotal += (fregues.TempoSaida - fregues.TempoChegada);
 }
 
+//Cálculo do estimador da média do tempo de espera na fila de uma rodada (EWi)
 double FilaMM1::TempoMedioDeEsperaNaFila(){
-    return this->temposDeEsperaNaFila/this->quantidadeSaidas;
+    return this->temposDeEsperaNaFila/this->EstatisticasColetadas;
 }
 
 double FilaMM1::TempoMedioDeAtendimento(){
-    return this->temposDeAtendimento/this->quantidadeSaidas;
+    return this->temposDeAtendimento/this->EstatisticasColetadas;
 }
 
 double FilaMM1::TempoMedioDeEsperaTotal(){
-    return this->temposDeEsperaTotal/this->quantidadeSaidas;
+    return this->temposDeEsperaTotal/this->EstatisticasColetadas;
 }
 
+//Cálculo do estimador da variância do tempo de espera na fila de uma rodada (VWi)
+double FilaMM1::VarianciaDoTempoDeEsperaNaFila(){
+    int n = this->EstatisticasColetadas;
+    return this->quadradosDosTemposDeEsperaNaFila/(n-1) - pow(this->temposDeEsperaNaFila, 2)/(n*(n-1));
+}
 
+//Reseta variaveis que acumulam o tempo de espera e o número de pessoas ao fim de uma rodada
+void FilaMM1::ResetaEstatisticasRodada(){
+    //Para W
+    this->temposDeEsperaNaFila = 0.0;
+    this->quadradosDosTemposDeEsperaNaFila = 0.0;
+    this->temposDeAtendimento = 0.0;
+    this->temposDeEsperaTotal = 0.0;
+    this->tempoOcupado = 0.0;
+    this->EstatisticasColetadas = 0;
+
+    //TODO: Para Nq
+
+}
 
 //Métodos privados
 
