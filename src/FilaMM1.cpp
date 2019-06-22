@@ -87,15 +87,20 @@ void FilaMM1::ReportaStatus() {
 //Gera estatística do número de pessoas na fila
 void FilaMM1::GeraEstatisticaNumeroDePessoasNaFila(double novoTempo){
     //Acumulamos a área correspondente ao gráfico (Número de pessoas) x (Tempo)
-    this->numeroDePessoasNaFilaVezesTempo += (novoTempo - this->TempoAtual) * this->FreguesesNaFilaDeEspera.size();
+    double intervaloEntreEventos = novoTempo - this->TempoAtual;
+    int tamanhoFilaDeEspera = this->FreguesesNaFilaDeEspera.size();
+    this->numeroDePessoasNaFilaVezesTempo += intervaloEntreEventos * tamanhoFilaDeEspera;
+    this->quadradosDoNumeroDePessoasNaFilaVezesTempo += intervaloEntreEventos * pow(tamanhoFilaDeEspera, 2);
 }
 
 //Gera estatísticas relevantes ao tempo de espera em fila do freguês
 void FilaMM1::GeraEstatisticaTempoEsperaNaFila(Fregues fregues){
     //std::cout<<fregues << std::endl;
     this->EstatisticasColetadasTempoEspera++;
-    this->temposNaFilaDeEspera += (fregues.TempoDeEntradaEmServico - fregues.TempoChegada);
-    this->quadradosDosTemposDeEsperaNaFila += pow((fregues.TempoDeEntradaEmServico - fregues.TempoChegada), 2);
+    double tempoDeEsperaDoFregues = fregues.TempoDeEntradaEmServico - fregues.TempoChegada;
+    this->temposNaFilaDeEspera += tempoDeEsperaDoFregues;
+    this->quadradosDosTemposDeEsperaNaFila += pow(tempoDeEsperaDoFregues, 2);
+
     this->temposDeAtendimento += (fregues.TempoSaida - fregues.TempoDeEntradaEmServico);
     this->temposDeEsperaTotal += (fregues.TempoSaida - fregues.TempoChegada);
 }
