@@ -21,17 +21,17 @@ void Simulacao::RodaSimulacao() {
 		//TODO: Criar Rodada.hpp e Rodada.cpp pra isolar lógica e estatísticas da rodada
 
 		//fim da rodada
-		EWRodada += fila.EstimadorMediaTempoNaFilaDeEspera();
-		EWRodada2 += fila.EstimadorMediaTempoNaFilaDeEspera()*fila.EstimadorMediaTempoNaFilaDeEspera();
-		VWRodada += fila.EstimadorVarianciaDoTempoNaFilaDeEspera();
-		VWRodada2 += pow(fila.EstimadorVarianciaDoTempoNaFilaDeEspera(), 2);
+		EWRodadas += fila.EstimadorMediaTempoNaFilaDeEspera();
+		EWRodadas2 += fila.EstimadorMediaTempoNaFilaDeEspera()*fila.EstimadorMediaTempoNaFilaDeEspera();
+		VWRodadas += fila.EstimadorVarianciaDoTempoNaFilaDeEspera();
+		VWRodadas2 += pow(fila.EstimadorVarianciaDoTempoNaFilaDeEspera(), 2);
 
-		std::cout << "---- FIM DA RODADA " << i << " ----" << std::endl;
-		std::cout << "est coletadas: " << fila.EstatisticasColetadasTempoEspera << std::endl;
-		std::cout << "EWRodada: " << EWRodada << std::endl;
-		std::cout << "EWRodada2: " << EWRodada2 << std::endl;
-		std::cout << "VWRodada: " << VWRodada << std::endl;
-		std::cout << "VWRodada2: " << VWRodada2 << std::endl;
+		//std::cout << "---- FIM DA RODADA " << i << " ----" << std::endl;
+		//std::cout << "est coletadas: " << fila.EstatisticasColetadasTempoEspera << std::endl;
+		//std::cout << "EWRodada: " << EWRodadas << std::endl;
+		//std::cout << "EWRodada2: " << EWRodadas2 << std::endl;
+		//std::cout << "VWRodada: " << VWRodadas << std::endl;
+		//std::cout << "VWRodada2: " << VWRodadas2 << std::endl;
 		fila.ResetaEstatisticasRodada();
 
 		//TODO: determinar fim do período transiente (plotar e ver no olhômetro?)
@@ -44,10 +44,10 @@ void Simulacao::RodaSimulacao() {
 
 void Simulacao::GeraEstatisticaSimulacao() {
     //Para W
-	EEW = EWRodada/n;
-	VEW = EWRodada2/(n-1) - pow(EWRodada, 2)/(n*(n-1));
-	EVW = VWRodada/n;
-	VVW = VWRodada2/(n-1) - pow(VWRodada, 2)/(n*(n-1));
+	EEW = EWRodadas/n;
+	VEW = EWRodadas2/(n-1) - pow(EWRodadas, 2)/(n*(n-1));
+	EVW = VWRodadas/n;
+	VVW = VWRodadas2/(n-1) - pow(VWRodadas, 2)/(n*(n-1));
     
 	std::cout << "Valor Analítico para EEW: " << Lambda/(1-Lambda) << std::endl;
 	std::cout << "EEW estimado: " << EEW << std::endl;
@@ -62,12 +62,18 @@ void Simulacao::GeraIntervaloDeConfianca() {
     //Para E[W]
 	Lower = EEW - t * sqrt(VEW)/sqrt(n);
 	Upper = EEW + t * sqrt(VEW)/sqrt(n);
-	// std::cout << "IC E[W]: [" << Lower << ", " << EEW << ", " << Upper << "]" << std::endl;
+
+	double precisao = (Upper-Lower)/(Upper+Lower);
+
+	std::cout << "IC E[W]: [" << Lower << ", " << EEW << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;
 
     //Para V(W)
 	Lower = EVW - t * sqrt(VVW)/sqrt(n);
 	Upper = EVW + t * sqrt(VVW)/sqrt(n);
-	// std::cout << "IC V[W]: [" << Lower << ", " << EVW << ", " << Upper << "]" << std::endl;   
+
+	precisao = (Upper-Lower)/(Upper+Lower);
+
+	std::cout << "IC V[W]: [" << Lower << ", " << EVW << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;   
 
     //TODO: Para E[Nq] 
 

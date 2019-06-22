@@ -113,6 +113,14 @@ double FilaMM1::EstimadorMediaDoNumeroDePessoasNaFilaDeEspera(double tempoInicio
     return this->numeroDePessoasNaFilaVezesTempo / tempoTotalRodada;
 }
 
+double FilaMM1::EstimadorMediaDosQuadradosDeNumerosDePessoasNaFilaDeEspera(double tempoInicioRodada){
+    double tempoTotalRodada = this->TempoAtual - tempoInicioRodada;
+    if(tempoTotalRodada < 0 ){
+        throw "Tempo passado para o cálculo de pessoas na fila inválido!";
+    }
+    return this->quadradosDoNumeroDePessoasNaFilaVezesTempo / tempoTotalRodada;
+}
+
 //Cálculo do estimador da média do tempo de espera na fila de uma rodada (EWi)
 double FilaMM1::EstimadorMediaTempoNaFilaDeEspera(){
     return this->temposNaFilaDeEspera/this->EstatisticasColetadasTempoEspera;
@@ -144,7 +152,8 @@ void FilaMM1::ResetaEstatisticasRodada(){
 
     //TODO: Para Nq
 
-    this->numeroDePessoasNaFilaVezesTempo = 0;
+    this->numeroDePessoasNaFilaVezesTempo = 0.0;
+    this->quadradosDoNumeroDePessoasNaFilaVezesTempo = 0.0;
 
 }
 

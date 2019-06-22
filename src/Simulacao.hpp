@@ -25,27 +25,28 @@ class Simulacao {
 	//Variância da variância do tempo de espera na fila (sigma^2 do IC da variãncia de W)
 	double VVW = 0.0;
 
-    //Estatísticas da Rodada
+    //Estatísticas das Rodadas
 	//Soma das média do tempo de espera na fila de uma rodada
-	double EWRodada = 0.0;
+	double EWRodadas = 0.0;
 	//Soma dos quadrados das médias do tempo de espera na fila de uma rodada
-	double EWRodada2 = 0.0;
+	double EWRodadas2 = 0.0;
 	//Soma das variâncias do tempo de espera na fila de uma rodada
-	double VWRodada = 0.0;
+	double VWRodadas = 0.0;
 	//Soma dos quadrados das variâncias do tempo de espera na fila de uma rodada
-	double VWRodada2 = 0.0;
+	double VWRodadas2 = 0.0;
     //Soma das média do número de pessoas na fila de uma rodada
-	double ENqRodada = 0.0;
+	double ENqRodadas = 0.0;
 	//Soma dos quadrados das médias do número de pessoas na fila de uma rodada
-	double ENqRodada2 = 0.0;
+	double ENqRodadas2 = 0.0;
 	//Soma das variâncias do número de pessoas na fila de uma rodada
-	double VNqRodada = 0.0;
+	double VNqRodadas = 0.0;
 	//Soma dos quadrados das variâncias do número de pessoas na fila de uma rodada
-	double VNqRodada2 = 0.0;
+	double VNqRodadas2 = 0.0;
 
 	//Variáveis referentes ao cálculo dos ICs
-	//t-Student para precisão de 5% e n-1 graus de liberdade
-	double t = 0.0; 
+	//t-Student para confiança de 95% e número grande de graus de liberdade. Obtido em https://www.medcalc.org/manual/t-distribution.php
+	double t = 1.960; 
+	double chi = 0.0;
 	//Limite inferior do IC
 	double Lower = 0.0;
 	//Limite superior do IC
