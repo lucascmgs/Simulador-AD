@@ -7,12 +7,14 @@ using namespace std;
 
 //Construtor
 Rodada::Rodada(){ 
+    Escritor esc = Escritor();
     this->rodada = 1;
-    Escritor().CriaCSV();
+    esc.CriaCSV();
 }
 
 //Função que coleta resultados da fila e aumenta o contador de rodada em +1
 void Rodada::ColetaResultadosDaRodada(double TempoMedioDeEsperaNaFila, double VarianciaDoTempoDeEsperaNaFila){
+    Escritor esc = Escritor();
     std::fstream arquivo;
 	this->EWRodada += TempoMedioDeEsperaNaFila;
 	this->EWRodada2 += TempoMedioDeEsperaNaFila*TempoMedioDeEsperaNaFila;
@@ -20,7 +22,7 @@ void Rodada::ColetaResultadosDaRodada(double TempoMedioDeEsperaNaFila, double Va
 	this->VWRodada2 += pow(VarianciaDoTempoDeEsperaNaFila, 2);
     std::vector<double> linha (4, 0.0);
     linha.at(0) = this->EWRodada; linha.at(1) = this->EWRodada2; linha.at(2) = this->VWRodada; linha.at(3) = this->VWRodada2;
-    arquivo = Escritor().EscreveLinhaEmCSV(4, linha);
+    arquivo = esc.EscreveLinhaEmCSV(4, linha);
 
 	std::cout << "---- FIM DA RODADA " << this->rodada << " ----" << std::endl;
 	std::cout << "est coletadas: EWRodada,EWRodada2,VWRodada,VWRodada2" << std::endl;
@@ -34,6 +36,7 @@ void Rodada::ColetaResultadosDaRodada(double TempoMedioDeEsperaNaFila, double Va
 }
 
 void Rodada::ColetaResultadosDaSimulacao(int n){
+    Escritor esc = Escritor();
     std::cout << "---- FIM DA SIMULACAO " << " ----" << std::endl;
     std::fstream arquivo;
     //Para W
@@ -43,10 +46,10 @@ void Rodada::ColetaResultadosDaSimulacao(int n){
 	this->VVW = VWRodada2/(n-1) - pow(VWRodada, 2)/(n*(n-1));
     std::vector<std::string> cabecalho;
     cabecalho.at(0) = "EEW"; cabecalho.at(1) = "VEW"; cabecalho.at(2) = "EVW"; cabecalho.at(3) = "VVW";
-    arquivo = Escritor().EscreveCabecalhoEmCSV(4, cabecalho);
+    arquivo = esc.EscreveCabecalhoEmCSV(4, cabecalho);
     std::vector<double> linha (4, 0.0);
     linha.at(0) = this->EEW; linha.at(1) = this->VEW; linha.at(2) = this->EVW; linha.at(3) = this->VVW;
-    arquivo = Escritor().EscreveLinhaEmCSV(4, linha);
+    arquivo = esc.EscreveLinhaEmCSV(4, linha);
 
     //TODO: Para Nq
     /* ... */
@@ -72,10 +75,11 @@ void Rodada::CalculaIntervalosDeConfianca(int t, int n){
 
  int main(){
     int n=5;
+    Rodada rod = Rodada();
     for(int i = 1; i < n; i++){
-        Rodada().ColetaResultadosDaRodada(1.0, 2.0);
+        rod.ColetaResultadosDaRodada(1.0, 2.0);
     }
-    Rodada().ColetaResultadosDaSimulacao(n);
-    Rodada().CalculaIntervalosDeConfianca(n,n);
+    rod.ColetaResultadosDaSimulacao(n);
+    rod.CalculaIntervalosDeConfianca(n,n);
     return 0;
 } 

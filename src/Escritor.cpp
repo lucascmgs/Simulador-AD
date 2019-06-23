@@ -7,7 +7,7 @@ Escritor::Escritor(void){ }
 
 //Esta função é a responsável por "criar" o .csv em questão. 
 //Ele escreve um cabeçalho, para que eu possa me guiar quando for gerar gráficos no google sheets a partir do csv.
-std::fstream CriaCSV(){
+std::fstream Escritor::CriaCSV(){
     std::fstream arquivo;
     arquivo.open("results.csv", ios::out | ios::app | ios::binary);
     arquivo << "#Rodada,EWRodada,EWRodada2,VWRodada,VWRodada2";
@@ -19,7 +19,7 @@ std::fstream CriaCSV(){
 //TODO: fazer com que o numero de métricas seja definido apenas uma vez na criação da classe ao invés de *toda vez que se escreve uma linha*
 //...
 //ou não, talvez a gente queira essa flexibilidade pra fazer merda (???)
-std::fstream EscreveLinhaEmCSV(int numeroDeMetricas, std::vector<double> entradas){
+std::fstream Escritor::EscreveLinhaEmCSV(int numeroDeMetricas, std::vector<double> entradas){
     std::fstream arquivo;
     arquivo.open("results.csv", ios::out | ios::app | ios::binary);
     for(int j = 0; j < numeroDeMetricas; j++){
@@ -34,7 +34,7 @@ std::fstream EscreveLinhaEmCSV(int numeroDeMetricas, std::vector<double> entrada
     return arquivo;
 }
 
-std::fstream EscreveCabecalhoEmCSV(int numeroDeMetricas, std::vector<std::string> entradas){
+std::fstream Escritor::EscreveCabecalhoEmCSV(int numeroDeMetricas, std::vector<std::string> entradas){
     std::fstream arquivo;
     arquivo.open("results.csv", ios::out | ios::app | ios::binary);
     for(int j = 0; j < numeroDeMetricas; j++){
