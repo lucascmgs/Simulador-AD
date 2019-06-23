@@ -44,7 +44,8 @@ void Rodada::ColetaResultadosDaSimulacao(int n){
 	this->VEW = EWRodada2/(n-1) - pow(EWRodada, 2)/(n*(n-1));
 	this->EVW = VWRodada/n;
 	this->VVW = VWRodada2/(n-1) - pow(VWRodada, 2)/(n*(n-1));
-    std::vector<std::string> cabecalho;
+    std::vector<std::string> cabecalho (4);
+    std::cout << cabecalho.size() << "!!!" << std::endl;
     cabecalho.at(0) = "EEW"; cabecalho.at(1) = "VEW"; cabecalho.at(2) = "EVW"; cabecalho.at(3) = "VVW";
     arquivo = esc.EscreveCabecalhoEmCSV(4, cabecalho);
     std::vector<double> linha (4, 0.0);
@@ -74,12 +75,12 @@ void Rodada::CalculaIntervalosDeConfianca(int t, int n){
 }
 
  int main(){
-    int n=5;
+    int n=5; int t=10;
     Rodada rod = Rodada();
-    for(int i = 1; i < n; i++){
+    for(int i = 0; i < n; i++){
         rod.ColetaResultadosDaRodada(1.0, 2.0);
     }
     rod.ColetaResultadosDaSimulacao(n);
-    rod.CalculaIntervalosDeConfianca(n,n);
+    rod.CalculaIntervalosDeConfianca(t,n);
     return 0;
 } 
