@@ -49,5 +49,6 @@ class Rodada{
     Rodada();
     void ColetaResultadosDaRodada(double TempoMedioDeEsperaNaFila, double VarianciaDoTempoDeEsperaNaFila);
     void ColetaResultadosDaSimulacao(int n);
+	void CalculaIntervalosDeConfianca(int t, int n);
 };
 #endif
