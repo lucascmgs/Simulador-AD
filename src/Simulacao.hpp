@@ -46,7 +46,8 @@ class Simulacao {
 	//Variáveis referentes ao cálculo dos ICs
 	//t-Student para confiança de 95% e número grande de graus de liberdade. Obtido em https://www.medcalc.org/manual/t-distribution.php
 	double t = 1.960; 
-	double chi = 0.0;
+	double chiInferior = 3.04413;
+	double chiSuperior = 3.357658;
 	//Limite inferior do IC
 	double Lower = 0.0;
 	//Limite superior do IC
