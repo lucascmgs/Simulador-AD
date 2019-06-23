@@ -11,8 +11,13 @@ void FilaMM1::TrataProximoEvento(){
     Evento proximoEvento = this->Eventos.top();
     this->Eventos.pop();
     
+    double novoTempo = proximoEvento.TempoOcorrencia;
+
+    //Geramos a estatística relacionada ao número de pessoas na fila desde o último evento
+    this->GeraEstatisticaNumeroDePessoasNaFila(novoTempo);
+
     //Avança tempo de simulação para o tempo do próximo evento
-    this->TempoAtual = proximoEvento.TempoOcorrencia;
+    this->TempoAtual = novoTempo;
 
     //Tratamos o evento de maneira correspondente ao seu tipo
     switch(proximoEvento.Tipo){
@@ -26,7 +31,7 @@ void FilaMM1::TrataProximoEvento(){
                 this->freguesEmServico = novoFregues;
                 this->GeraProximaSaida();
             } else {
-                this->Fregueses.push_front(novoFregues);
+                this->FreguesesNaFilaDeEspera.push_front(novoFregues);
             }
             //Gera a chegada do próximo freguês
             this->GeraProximaChegada();
@@ -36,7 +41,7 @@ void FilaMM1::TrataProximoEvento(){
             //Atribuimos um tempo de saída para o freguês que está saindo
             this->freguesEmServico.TempoSaida = this->TempoAtual;
             //Geramos as estatísticas obtidas com a saíde desse freguês
-            this->GeraEstatistica(this->freguesEmServico);
+            this->GeraEstatisticaTempoEsperaNaFila(this->freguesEmServico);
 
             //Retiramos o freguês de serviço
             this->freguesEmServico = Fregues(-1);
@@ -75,50 +80,66 @@ void FilaMM1::GeraProximaSaida(){
 
 //Imprime informações sobre o estado da fila (apenas pra efeitos de debug, depois será removido)
 void FilaMM1::ReportaStatus() {
-	std::cout << "A fila possui " << this->Fregueses.size() << " fregueses e esta funcionando ha " << this->TempoAtual << " segundos." << std::endl;
+	std::cout << "A fila possui " << this->FreguesesNaFilaDeEspera.size() << " fregueses e esta funcionando ha " << this->TempoAtual << " segundos." << std::endl;
 	std::cout << "Lista com " << this->Eventos.size() << " eventos" << std::endl;
 }
 
-//Gera estatísticas relevantes do freguês (a implementar)
-void FilaMM1::GeraEstatistica(Fregues fregues){
+//Gera estatística do número de pessoas na fila
+void FilaMM1::GeraEstatisticaNumeroDePessoasNaFila(double novoTempo){
+    //Acumulamos a área correspondente ao gráfico (Número de pessoas) x (Tempo)
+    this->numeroDePessoasNaFilaVezesTempo += (novoTempo - this->TempoAtual) * this->FreguesesNaFilaDeEspera.size();
+}
+
+//Gera estatísticas relevantes ao tempo de espera em fila do freguês
+void FilaMM1::GeraEstatisticaTempoEsperaNaFila(Fregues fregues){
     //std::cout<<fregues << std::endl;
-    this->EstatisticasColetadas++;
-    this->temposDeEsperaNaFila += (fregues.TempoDeEntradaEmServico - fregues.TempoChegada);
+    this->EstatisticasColetadasTempoEspera++;
+    this->temposNaFilaDeEspera += (fregues.TempoDeEntradaEmServico - fregues.TempoChegada);
     this->quadradosDosTemposDeEsperaNaFila += pow((fregues.TempoDeEntradaEmServico - fregues.TempoChegada), 2);
     this->temposDeAtendimento += (fregues.TempoSaida - fregues.TempoDeEntradaEmServico);
     this->temposDeEsperaTotal += (fregues.TempoSaida - fregues.TempoChegada);
 }
 
+double FilaMM1::EstimadorMediaDoNumeroDePessoasNaFilaDeEspera(double tempoInicioRodada){
+    double tempoTotalRodada = this->TempoAtual - tempoInicioRodada;
+    if(tempoTotalRodada < 0){
+        throw "Tempo passado para o cálculo de pessoas na fila inválido!";
+    }
+    return this->numeroDePessoasNaFilaVezesTempo / tempoTotalRodada;
+}
+
 //Cálculo do estimador da média do tempo de espera na fila de uma rodada (EWi)
-double FilaMM1::TempoMedioDeEsperaNaFila(){
-    return this->temposDeEsperaNaFila/this->EstatisticasColetadas;
+double FilaMM1::EstimadorMediaTempoNaFilaDeEspera(){
+    return this->temposNaFilaDeEspera/this->EstatisticasColetadasTempoEspera;
 }
 
 double FilaMM1::TempoMedioDeAtendimento(){
-    return this->temposDeAtendimento/this->EstatisticasColetadas;
+    return this->temposDeAtendimento/this->EstatisticasColetadasTempoEspera;
 }
 
 double FilaMM1::TempoMedioDeEsperaTotal(){
-    return this->temposDeEsperaTotal/this->EstatisticasColetadas;
+    return this->temposDeEsperaTotal/this->EstatisticasColetadasTempoEspera;
 }
 
 //Cálculo do estimador da variância do tempo de espera na fila de uma rodada (VWi)
-double FilaMM1::VarianciaDoTempoDeEsperaNaFila(){
-    int n = this->EstatisticasColetadas;
-    return this->quadradosDosTemposDeEsperaNaFila/(n-1) - pow(this->temposDeEsperaNaFila, 2)/(n*(n-1));
+double FilaMM1::EstimadorVarianciaDoTempoNaFilaDeEspera(){
+    int n = this->EstatisticasColetadasTempoEspera;
+    return this->quadradosDosTemposDeEsperaNaFila/(n-1) - pow(this->temposNaFilaDeEspera, 2)/(n*(n-1));
 }
 
 //Reseta variaveis que acumulam o tempo de espera e o número de pessoas ao fim de uma rodada
 void FilaMM1::ResetaEstatisticasRodada(){
     //Para W
-    this->temposDeEsperaNaFila = 0.0;
+    this->temposNaFilaDeEspera = 0.0;
     this->quadradosDosTemposDeEsperaNaFila = 0.0;
     this->temposDeAtendimento = 0.0;
     this->temposDeEsperaTotal = 0.0;
     this->tempoOcupado = 0.0;
-    this->EstatisticasColetadas = 0;
+    this->EstatisticasColetadasTempoEspera = 0;
 
     //TODO: Para Nq
+
+    this->numeroDePessoasNaFilaVezesTempo = 0;
 
 }
 
@@ -126,7 +147,7 @@ void FilaMM1::ResetaEstatisticasRodada(){
 
 //Checa se a fila de fregueses está vazia e não há ninguém no servidor
 bool FilaMM1::FilaVazia(){
-    if(this->Fregueses.empty() && this->freguesEmServico.TempoChegada == -1.0) {
+    if(this->FreguesesNaFilaDeEspera.empty() && this->freguesEmServico.TempoChegada == -1.0) {
         return true;
     } else {
         return false;
@@ -135,7 +156,7 @@ bool FilaMM1::FilaVazia(){
 
 //Checa se a fila de fregueses está vazia
 bool FilaMM1::FilaDeEsperaVazia(){
-    if(this->Fregueses.empty()){
+    if(this->FreguesesNaFilaDeEspera.empty()){
         return true;
     } else {
         return false;
@@ -156,13 +177,13 @@ void FilaMM1::PreparaNovoServico(){
     if(!this->FilaDeEsperaVazia()){
         switch(this->Tipo){
             case TipoFila::FCFS : {
-                this->freguesEmServico = this->Fregueses.back();
-                this->Fregueses.pop_back();
+                this->freguesEmServico = this->FreguesesNaFilaDeEspera.back();
+                this->FreguesesNaFilaDeEspera.pop_back();
                 break;
             }
             case TipoFila::LCFS : {
-                this->freguesEmServico = this->Fregueses.front();
-                this->Fregueses.pop_front();
+                this->freguesEmServico = this->FreguesesNaFilaDeEspera.front();
+                this->FreguesesNaFilaDeEspera.pop_front();
                 break;
             }
         }

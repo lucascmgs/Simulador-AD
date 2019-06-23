@@ -15,19 +15,19 @@ void Simulacao::RodaSimulacao() {
 	fila.InicializaFila();
 
 	for (int i = 0; i < this->n; i++){
-		while(fila.EstatisticasColetadas < k) {
+		while(fila.EstatisticasColetadasTempoEspera < k) {
 			fila.TrataProximoEvento();
 		}
 		//TODO: Criar Rodada.hpp e Rodada.cpp pra isolar lógica e estatísticas da rodada
 
 		//fim da rodada
-		EWRodada += fila.TempoMedioDeEsperaNaFila();
-		EWRodada2 += fila.TempoMedioDeEsperaNaFila()*fila.TempoMedioDeEsperaNaFila();
-		VWRodada += fila.VarianciaDoTempoDeEsperaNaFila();
-		VWRodada2 += pow(fila.VarianciaDoTempoDeEsperaNaFila(), 2);
+		EWRodada += fila.EstimadorMediaTempoNaFilaDeEspera();
+		EWRodada2 += fila.EstimadorMediaTempoNaFilaDeEspera()*fila.EstimadorMediaTempoNaFilaDeEspera();
+		VWRodada += fila.EstimadorVarianciaDoTempoNaFilaDeEspera();
+		VWRodada2 += pow(fila.EstimadorVarianciaDoTempoNaFilaDeEspera(), 2);
 
 		std::cout << "---- FIM DA RODADA " << i << " ----" << std::endl;
-		std::cout << "est coletadas: " << fila.EstatisticasColetadas << std::endl;
+		std::cout << "est coletadas: " << fila.EstatisticasColetadasTempoEspera << std::endl;
 		std::cout << "EWRodada: " << EWRodada << std::endl;
 		std::cout << "EWRodada2: " << EWRodada2 << std::endl;
 		std::cout << "VWRodada: " << VWRodada << std::endl;
