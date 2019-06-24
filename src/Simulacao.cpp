@@ -1,4 +1,6 @@
 #include "Simulacao.hpp"
+#include "Rodada.hpp"
+#include "Escritor.hpp"
 #include "FilaMM1.hpp"
 
 Simulacao::Simulacao(int n, int k, int seed, double lambda) {
@@ -11,6 +13,7 @@ Simulacao::Simulacao(int n, int k, int seed, double lambda) {
 void Simulacao::RodaSimulacao() {
     GeradorAleatorio::Inicializa(Seed);
 
+	Rodada rod = Rodada();
     FilaMM1 fila = FilaMM1(TipoFila::FCFS, Lambda);
 	fila.InicializaFila();
 
@@ -21,33 +24,32 @@ void Simulacao::RodaSimulacao() {
 		//TODO: Criar Rodada.hpp e Rodada.cpp pra isolar lógica e estatísticas da rodada
 
 		//fim da rodada
-		EWRodada += fila.TempoMedioDeEsperaNaFila();
-		EWRodada2 += fila.TempoMedioDeEsperaNaFila()*fila.TempoMedioDeEsperaNaFila();
-		VWRodada += fila.VarianciaDoTempoDeEsperaNaFila();
-		VWRodada2 += pow(fila.VarianciaDoTempoDeEsperaNaFila(), 2);
-
-		std::cout << "---- FIM DA RODADA " << i << " ----" << std::endl;
-		std::cout << "est coletadas: " << fila.EstatisticasColetadas << std::endl;
-		std::cout << "EWRodada: " << EWRodada << std::endl;
-		std::cout << "EWRodada2: " << EWRodada2 << std::endl;
-		std::cout << "VWRodada: " << VWRodada << std::endl;
-		std::cout << "VWRodada2: " << VWRodada2 << std::endl;
+		rod.ColetaResultadosDaRodada(fila.TempoMedioDeEsperaNaFila(),fila.VarianciaDoTempoDeEsperaNaFila());
 		fila.ResetaEstatisticasRodada();
 
 		//TODO: determinar fim do período transiente (plotar e ver no olhômetro?)
 	}
 	//fim da simulação
 	std::cout << "---- FIM DA SIMULACAO " << " ----" << std::endl;
-    GeraEstatisticaSimulacao();
+    GeraEstatisticaSimulacao(rod);
     GeraIntervaloDeConfianca();
 }
 
-void Simulacao::GeraEstatisticaSimulacao() {
+void Simulacao::GeraEstatisticaSimulacao(Rodada rod) {
+	Escritor esc = Escritor();
     //Para W
-	EEW = EWRodada/n;
-	VEW = EWRodada2/(n-1) - pow(EWRodada, 2)/(n*(n-1));
-	EVW = VWRodada/n;
-	VVW = VWRodada2/(n-1) - pow(VWRodada, 2)/(n*(n-1));
+	EEW = rod.EWRodada/n;
+	VEW = rod.EWRodada2/(n-1) - pow(rod.EWRodada, 2)/(n*(n-1));
+	EVW = rod.VWRodada/n;
+	VVW = rod.VWRodada2/(n-1) - pow(rod.VWRodada, 2)/(n*(n-1));
+
+    std::vector<string> linha (1);
+    linha.at(0) = "VA,EEW,VEW,EVW,VVW";
+    esc.EscreveCabecalhoEmCSV(1, linha);
+	std::vector<double> valores (5);
+    valores.at(0) = Lambda/(1-Lambda); valores.at(1) = EEW; valores.at(2) = VEW; valores.at(3) = EVW; valores.at(4) = VVW;
+	esc.EscreveLinhaEmCSV(5, valores);
+	
     
 	std::cout << "Valor Analítico para EEW: " << Lambda/(1-Lambda) << std::endl;
 	std::cout << "EEW estimado: " << EEW << std::endl;
@@ -62,12 +64,12 @@ void Simulacao::GeraIntervaloDeConfianca() {
     //Para E[W]
 	Lower = EEW - t * sqrt(VEW)/sqrt(n);
 	Upper = EEW + t * sqrt(VEW)/sqrt(n);
-	// std::cout << "IC E[W]: [" << Lower << ", " << EEW << ", " << Upper << "]" << std::endl;
+	std::cout << "IC E[W]: [" << Lower << ", " << EEW << ", " << Upper << "]" << std::endl;
 
     //Para V(W)
 	Lower = EVW - t * sqrt(VVW)/sqrt(n);
 	Upper = EVW + t * sqrt(VVW)/sqrt(n);
-	// std::cout << "IC V[W]: [" << Lower << ", " << EVW << ", " << Upper << "]" << std::endl;   
+	std::cout << "IC V[W]: [" << Lower << ", " << EVW << ", " << Upper << "]" << std::endl;   
 
     //TODO: Para E[Nq] 
 

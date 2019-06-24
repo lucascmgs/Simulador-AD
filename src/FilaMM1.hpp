@@ -5,6 +5,7 @@
 #include<iostream>
 #include "Fregues.hpp"
 #include "Evento.hpp"
+#include "Rodada.hpp"
 #include "GeradorAleatorio.hpp"
 
 //Atribuimos um Tipo à fila correspondente à sua política de atendimento

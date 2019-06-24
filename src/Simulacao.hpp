@@ -1,6 +1,7 @@
 #ifndef SIMULACAO
 #define SIMULACAO
 #include <iostream>
+#include "Rodada.hpp"
 #include "GeradorAleatorio.hpp"
 
 class Simulacao {
@@ -53,7 +54,7 @@ class Simulacao {
 
     Simulacao(int n, int k, int seed, double lambda);
     void RodaSimulacao();
-    void GeraEstatisticaSimulacao();
+    void GeraEstatisticaSimulacao(Rodada rod);
     void GeraIntervaloDeConfianca();
 };
 
