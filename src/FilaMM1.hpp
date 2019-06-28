@@ -20,12 +20,12 @@ class FilaMM1{
     //Variável que mantém o tempo da fila    
     double TempoAtual;
     //Número de estatísticas já coletadas numa rodada
-    int EstatisticasColetadas = 0;
+    int EstatisticasColetadasTempoEspera = 0;
 
     //Fregues que está atualmente em serviço
     Fregues freguesEmServico = Fregues(-1);
     //Lista de fregueses presentes na fila de espera
-    std::list<Fregues> Fregueses;
+    std::list<Fregues> FreguesesNaFilaDeEspera;
     //Heap de eventos que ocorrem na fila
     std::priority_queue<Evento> Eventos;
 
@@ -34,14 +34,16 @@ class FilaMM1{
     void TrataProximoEvento();
 	void ReportaStatus();
     void ResetaEstatisticasRodada();
-    double TempoMedioDeEsperaNaFila();
+    double EstimadorMediaDoNumeroDePessoasNaFilaDeEspera(double tempoInicioRodada);
+    double EstimadorMediaTempoNaFilaDeEspera();
     double TempoMedioDeAtendimento();
     double TempoMedioDeEsperaTotal();
-    double VarianciaDoTempoDeEsperaNaFila();
+    double EstimadorVarianciaDoTempoNaFilaDeEspera();
 
     private:
-    double temposDeEsperaNaFila = 0.0;
+    double temposNaFilaDeEspera = 0.0;
     double quadradosDosTemposDeEsperaNaFila = 0.0;
+    double numeroDePessoasNaFilaVezesTempo = 0.0;
     double temposDeAtendimento = 0.0;
     double temposDeEsperaTotal = 0.0;
     double tempoOcupado = 0.0;
@@ -49,7 +51,8 @@ class FilaMM1{
     void GeraProximaChegada();
     void GeraProximaSaida();
     void PreparaNovoServico();
-    void GeraEstatistica(Fregues fregues);
+    void GeraEstatisticaNumeroDePessoasNaFila(double novoTempo);
+    void GeraEstatisticaTempoEsperaNaFila(Fregues fregues);
     bool FilaVazia();
     bool TemServico();
     bool FilaDeEsperaVazia();

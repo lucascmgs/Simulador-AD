@@ -20,6 +20,7 @@ void Simulacao::RodaSimulacao() {
 		rod.ColetaResultadosDaRodada();
 		this->AcumulaResultadosDaRodada(rod);
 
+
 	}
 	//fim da simulação
 	std::cout << "---- FIM DA SIMULACAO " << " ----" << std::endl;
