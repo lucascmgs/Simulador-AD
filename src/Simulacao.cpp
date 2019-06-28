@@ -14,14 +14,12 @@ void Simulacao::RodaSimulacao() {
 	fila.InicializaFila();
 
 	for (int i = 0; i < this->n; i++){
-		Rodada rod = Rodada(i, this->k);
+		Rodada rod = Rodada(i, this->k, &fila);
 		
-		rod.RealizaRodada(fila);
-		rod.ColetaResultadosDaRodada(fila);
+		rod.RealizaRodada();
+		rod.ColetaResultadosDaRodada();
 		this->AcumulaResultadosDaRodada(rod);
-		fila.ResetaEstatisticasRodada();
 
-		//TODO: determinar fim do período transiente (plotar e ver no olhômetro?)
 	}
 	//fim da simulação
 	std::cout << "---- FIM DA SIMULACAO " << " ----" << std::endl;
