@@ -14,15 +14,15 @@ Rodada::Rodada(int indiceRodada, int tamanhoRodada, FilaMM1 *fila){
 
 
 void Rodada::RealizaRodada(){
-    while(this->Fila->EstatisticasColetadas < this->Tamanho) {
+    while(this->Fila->EstatisticasColetadasTempoEspera < this->Tamanho) {
 			this->Fila->TrataProximoEvento();
 		}
 }
 
 //Função que coleta resultados da fila para a rodada
 void Rodada::ColetaResultadosDaRodada(){
-    double tempoMedio = this->Fila->TempoMedioDeEsperaNaFila();
-    double varianciaTempoMedio = this->Fila->VarianciaDoTempoDeEsperaNaFila();
+    double tempoMedio = this->Fila->EstimadorMediaTempoNaFilaDeEspera();
+    double varianciaTempoMedio = this->Fila->EstimadorVarianciaDoTempoNaFilaDeEspera();
     //Escritor esc = Escritor();
     //std::fstream arquivo;
 	this->EWRodada = tempoMedio;
