@@ -10,15 +10,22 @@ Simulacao::Simulacao(int n, int k, int seed, double lambda) {
 void Simulacao::RodaSimulacao() {
     GeradorAleatorio::Inicializa(Seed);
 
-  FilaMM1 fila = FilaMM1(TipoFila::FCFS, Lambda);
+  	FilaMM1 fila = FilaMM1(TipoFila::FCFS, Lambda);
+	//Inicializamos a fila adicionando um primeiro evento
 	fila.InicializaFila();
+
+	FaseTransiente trans = FaseTransiente(&fila);
+	trans.RodaFaseTransiente();
 
 	for (int i = 0; i < this->n; i++){
 
 		Rodada rod = Rodada(i, this->k, &fila);
 		
+		//Realizamos uma rodada da simulação até o fim
 		rod.RealizaRodada();
+		//Coletamos os resultados da rodada e resetamos os valores das métricas na fila
 		rod.ColetaResultadosDaRodada();
+		//Acumulamos os resultados da rodada em nossa simulação
 		this->AcumulaResultadosDaRodada(rod);
 
 	}

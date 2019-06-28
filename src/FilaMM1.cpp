@@ -59,8 +59,19 @@ void FilaMM1::TrataProximoEvento(){
     }
 }
 
+//Caso seja necessário checar se a fila já está inicializada
+bool FilaMM1::ChecaSeFilaInicializada(){
+    return this->inicializada;
+}
+
+//Se ainda não está inicializada, geramos uma chegada inicial e settamos a fila como inicializada
 void FilaMM1::InicializaFila(){
-    this->GeraProximaChegada();
+    if(this->inicializada == false){
+        this->GeraProximaChegada();
+        this->inicializada = true;
+    }else {
+        std::cout << "Fila já inicializada!" << std::endl;
+    }
 }
 
 //Gera o próximo evento de chegada
