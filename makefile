@@ -1,4 +1,4 @@
-CC = g++
+CC = clang++
 BINARIES = bin
 SOURCE = src
 
