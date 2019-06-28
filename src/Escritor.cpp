@@ -10,7 +10,7 @@ Escritor::Escritor(void){ }
 std::fstream Escritor::CriaCSV(){
     std::fstream arquivo;
     arquivo.open("results.csv", ios::out | ios::app | ios::binary);
-    arquivo << "#Rodada,EWRodada,EWRodada2,VWRodada,VWRodada2";
+    arquivo << "EWRodada,EWRodada2,VWRodada,VWRodada2";
     arquivo << "\n";
     return arquivo;
 }
