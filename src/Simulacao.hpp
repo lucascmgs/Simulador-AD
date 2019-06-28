@@ -1,6 +1,10 @@
 #ifndef SIMULACAO
 #define SIMULACAO
+
 #include <iostream>
+#include "FilaMM1.hpp"
+#include "Escritor.hpp"
+#include "Rodada.hpp"
 #include "GeradorAleatorio.hpp"
 
 class Simulacao {
@@ -27,21 +31,21 @@ class Simulacao {
 
     //Estatísticas da Rodada
 	//Soma das média do tempo de espera na fila de uma rodada
-	double EWRodada = 0.0;
+	double EWRodadas = 0.0;
 	//Soma dos quadrados das médias do tempo de espera na fila de uma rodada
-	double EWRodada2 = 0.0;
+	double EWRodadas2 = 0.0;
 	//Soma das variâncias do tempo de espera na fila de uma rodada
-	double VWRodada = 0.0;
+	double VWRodadas = 0.0;
 	//Soma dos quadrados das variâncias do tempo de espera na fila de uma rodada
-	double VWRodada2 = 0.0;
+	double VWRodadas2 = 0.0;
     //Soma das média do número de pessoas na fila de uma rodada
-	double ENqRodada = 0.0;
+	double ENqRodadas = 0.0;
 	//Soma dos quadrados das médias do número de pessoas na fila de uma rodada
-	double ENqRodada2 = 0.0;
+	double ENqRodadas2 = 0.0;
 	//Soma das variâncias do número de pessoas na fila de uma rodada
-	double VNqRodada = 0.0;
+	double VNqRodadas = 0.0;
 	//Soma dos quadrados das variâncias do número de pessoas na fila de uma rodada
-	double VNqRodada2 = 0.0;
+	double VNqRodadas2 = 0.0;
 
 	//Variáveis referentes ao cálculo dos ICs
 	//t-Student para precisão de 5% e n-1 graus de liberdade
@@ -55,6 +59,7 @@ class Simulacao {
     void RodaSimulacao();
     void GeraEstatisticaSimulacao();
     void GeraIntervaloDeConfianca();
+	void AcumulaResultadosDaRodada(Rodada rod);
 };
 
 
