@@ -1,7 +1,4 @@
 #include "Simulacao.hpp"
-#include "Rodada.hpp"
-#include "Escritor.hpp"
-#include "FilaMM1.hpp"
 
 Simulacao::Simulacao(int n, int k, int seed, double lambda) {
     this->n = n;
@@ -13,35 +10,40 @@ Simulacao::Simulacao(int n, int k, int seed, double lambda) {
 void Simulacao::RodaSimulacao() {
     GeradorAleatorio::Inicializa(Seed);
 
-	Rodada rod = Rodada();
     FilaMM1 fila = FilaMM1(TipoFila::FCFS, Lambda);
 	fila.InicializaFila();
 
 	for (int i = 0; i < this->n; i++){
-		while(fila.EstatisticasColetadas < k) {
-			fila.TrataProximoEvento();
-		}
-		//TODO: Criar Rodada.hpp e Rodada.cpp pra isolar lógica e estatísticas da rodada
-
-		//fim da rodada
-		rod.ColetaResultadosDaRodada(fila.TempoMedioDeEsperaNaFila(),fila.VarianciaDoTempoDeEsperaNaFila());
+		Rodada rod = Rodada(i, this->k);
+		
+		rod.RealizaRodada(fila);
+		rod.ColetaResultadosDaRodada(fila);
+		this->AcumulaResultadosDaRodada(rod);
 		fila.ResetaEstatisticasRodada();
 
 		//TODO: determinar fim do período transiente (plotar e ver no olhômetro?)
 	}
 	//fim da simulação
 	std::cout << "---- FIM DA SIMULACAO " << " ----" << std::endl;
-    GeraEstatisticaSimulacao(rod);
+    GeraEstatisticaSimulacao();
     GeraIntervaloDeConfianca();
 }
 
-void Simulacao::GeraEstatisticaSimulacao(Rodada rod) {
+void Simulacao::AcumulaResultadosDaRodada(Rodada rod){
+	this->EWRodadas += rod.EWRodada;
+	this->EWRodadas2 += rod.EWRodada2;
+	this->VWRodadas += rod.VWRodada;
+	this->VWRodadas2 += rod.VWRodada2;
+}
+
+
+void Simulacao::GeraEstatisticaSimulacao() {
 	Escritor esc = Escritor();
     //Para W
-	EEW = rod.EWRodada/n;
-	VEW = rod.EWRodada2/(n-1) - pow(rod.EWRodada, 2)/(n*(n-1));
-	EVW = rod.VWRodada/n;
-	VVW = rod.VWRodada2/(n-1) - pow(rod.VWRodada, 2)/(n*(n-1));
+	EEW = this->EWRodadas/n;
+	VEW = this->EWRodadas2/(n-1) - pow(this->EWRodadas, 2)/(n*(n-1));
+	EVW = this->VWRodadas/n;
+	VVW = this->VWRodadas2/(n-1) - pow(this->VWRodadas, 2)/(n*(n-1));
 
     std::vector<string> linha (1);
     linha.at(0) = "VA,EEW,VEW,EVW,VVW";
