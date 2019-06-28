@@ -35,6 +35,7 @@ class FilaMM1{
 	void ReportaStatus();
     void ResetaEstatisticasRodada();
     double EstimadorMediaDoNumeroDePessoasNaFilaDeEspera(double tempoInicioRodada);
+    double EstimadorMediaDosQuadradosDeNumerosDePessoasNaFilaDeEspera(double tempoInicioRodada);
     double EstimadorMediaTempoNaFilaDeEspera();
     double TempoMedioDeAtendimento();
     double TempoMedioDeEsperaTotal();
@@ -44,6 +45,7 @@ class FilaMM1{
     double temposNaFilaDeEspera = 0.0;
     double quadradosDosTemposDeEsperaNaFila = 0.0;
     double numeroDePessoasNaFilaVezesTempo = 0.0;
+    double quadradosDoNumeroDePessoasNaFilaVezesTempo = 0.0;
     double temposDeAtendimento = 0.0;
     double temposDeEsperaTotal = 0.0;
     double tempoOcupado = 0.0;
