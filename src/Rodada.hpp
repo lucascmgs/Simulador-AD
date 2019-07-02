@@ -15,6 +15,8 @@ class Rodada{
 	//Tamanho da rodada
 	int Tamanho;
 
+	//Tempo de início da rodada
+	double TempoInicio;
 
 	FilaMM1* Fila;
     //Estatísticas da Rodada

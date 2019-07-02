@@ -21,6 +21,7 @@ class Simulacao {
     double Lambda = 0;
     
     //Estatísticas da Simulação
+	//Para W
 	//Estimador da média do tempo de espera na fila (centro do IC da média de W)
 	double EEW = 0.0;
 	//Variância da média do tempo de espera na fila (sigma^2 do IC da média de W)
@@ -29,6 +30,16 @@ class Simulacao {
 	double EVW = 0.0;
 	//Variância da variância do tempo de espera na fila (sigma^2 do IC da variãncia de W)
 	double VVW = 0.0;
+
+	//Para Nq
+	//Estimador da média do numero de pessoas na fila de espera (centro do IC da média de W)
+	double EENq = 0.0;
+	//Variância da média do numero de pessoas na fila de espera (sigma^2 do IC da média de W)
+	double VENq = 0.0;
+	//Estimador da variância do numero de pessoas na fila de espera (centro do IC da variãncia de W)
+	double EVNq = 0.0;
+	//Variância da variância do numero de pessoas na fila de espera (sigma^2 do IC da variãncia de W)
+	double VVNq = 0.0;
 
     //Estatísticas das Rodadas
 	//Soma das média do tempo de espera na fila de uma rodada
@@ -49,10 +60,11 @@ class Simulacao {
 	double VNqRodadas2 = 0.0;
 
 	//Variáveis referentes ao cálculo dos ICs
-	//t-Student para confiança de 95% e número grande de graus de liberdade. Obtido em https://www.medcalc.org/manual/t-distribution.php
+	//Percentil da t-Student para confiança de 95% e número grande de graus de liberdade. Obtido em https://www.medcalc.org/manual/t-distribution.php
 	double t = 1.960; 
-	double chiInferior = 3.04413;
-	double chiSuperior = 3.357658;
+	//Percentis da chi-Quadrado para confiança de 95% e 3200 - 1 = 3199 graus de liberdade. Obtido em https://keisan.casio.com/exec/system/1180573197
+	double chiInferior = 3044.130201771;
+	double chiSuperior = 3357.658239650;
 	//Limite inferior do IC
 	double Lower = 0.0;
 	//Limite superior do IC
@@ -61,7 +73,7 @@ class Simulacao {
     Simulacao(int n, int k, int seed, double lambda);
     void RodaSimulacao();
     void GeraEstatisticaSimulacao();
-    void GeraIntervaloDeConfianca();
+    void GeraIntervalosDeConfianca();
 	void AcumulaResultadosDaRodada(Rodada rod);
 };
 

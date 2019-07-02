@@ -32,7 +32,7 @@ namespace GeradorAleatorio {
 	static double Exponencial(double lambda) {
 		//Variável uniforme para gerar uma amostra da exponencial invertendo a PDF
 		double uniforme = Uniforme01();
-		//
+		//Evita passar 0 à função log, já que daria um erro, passando em seu lugar o menor double positivo possível
 		if (uniforme == 0) {
 			uniforme = DBL_MIN;
 		}

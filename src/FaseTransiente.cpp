@@ -13,7 +13,7 @@ void FaseTransiente::RodaFaseTransiente(){
     //Indica que a fila está em fase transiente
     bool transiente = true;
 
-    //Estas duas variáveis serão usadas para armazenas as métricas antes de um evento ser tratado
+    //Estas duas variáveis serão usadas para armazenar as métricas antes de um evento ser tratado
     double tempoEsperaAnterior = 0.0;
     double numeroPessoasAnterior = 0.0;
 
