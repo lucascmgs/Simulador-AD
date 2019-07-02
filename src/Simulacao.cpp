@@ -1,4 +1,10 @@
 #include "Simulacao.hpp"
+#include <stdlib.h>
+#include <fstream>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <ctime>
 
 Simulacao::Simulacao(int n, int k, int seed, double lambda) {
     this->n = n;
@@ -17,6 +23,9 @@ void Simulacao::RodaSimulacao() {
 	FaseTransiente trans = FaseTransiente(&fila);
 	trans.RodaFaseTransiente();
 
+	time_t tempoAtual = time(0);
+	tm * tempoDaSimulacao = localtime(&tempoAtual);
+
 	for (int i = 0; i < this->n; i++){
 
 		Rodada rod = Rodada(i, this->k, &fila);
@@ -33,6 +42,7 @@ void Simulacao::RodaSimulacao() {
 	std::cout << "---- FIM DA SIMULACAO " << " ----" << std::endl;
     GeraEstatisticaSimulacao();
     GeraIntervaloDeConfianca();
+	ColetaEstatisticasDaSimulacao(fila, tempoDaSimulacao);
 }
 
 void Simulacao::AcumulaResultadosDaRodada(Rodada rod){
@@ -44,21 +54,13 @@ void Simulacao::AcumulaResultadosDaRodada(Rodada rod){
 
 
 void Simulacao::GeraEstatisticaSimulacao() {
-	Escritor esc = Escritor();
     //Para W
 
 	EEW = this->EWRodadas/n;
 	VEW = this->EWRodadas2/(n-1) - pow(this->EWRodadas, 2)/(n*(n-1));
 	EVW = this->VWRodadas/n;
-	VVW = this->VWRodadas2/(n-1) - pow(this->VWRodadas, 2)/(n*(n-1));
-
-    std::vector<string> linha (1);
-    linha.at(0) = "VA,EEW,VEW,EVW,VVW";
-    esc.EscreveCabecalhoEmCSV(1, linha);
-	std::vector<double> valores (5);
-    valores.at(0) = Lambda/(1-Lambda); valores.at(1) = EEW; valores.at(2) = VEW; valores.at(3) = EVW; valores.at(4) = VVW;
-	esc.EscreveLinhaEmCSV(5, valores);
-	    
+	VVW = this->VWRodadas2/(n-1) - pow(this->VWRodadas, 2)/(n*(n-1)); 
+	
 	std::cout << "Valor Analítico para EEW: " << Lambda/(1-Lambda) << std::endl;
 	std::cout << "EEW estimado: " << EEW << std::endl;
 	std::cout << "VEW: " << VEW << std::endl;
@@ -89,4 +91,50 @@ void Simulacao::GeraIntervaloDeConfianca() {
 
     //TODO: Para V(Nq) 
 
+}
+
+void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
+	Escritor esc = Escritor();
+	fstream file;
+	file.open("results.csv");
+	if(file.fail()){
+		std::vector<string> linha (1);
+		linha.at(0) = "Timestamp,Utilizacao,Politica,ICMediaTempoEspera,ICVarianciaTempoEspera(t-student),ICVarianciaTempoEspera(chi-square),ICMediaPessoas,ICVarianciaPessoas(t-student),ICVarianciaPessoas(chi-square)";
+		esc.EscreveCabecalhoEmCSV(1, linha);	
+	}
+	file.close();
+
+	string hour;
+	string minute = to_string(simTime->tm_min); if(minute.size()<2) minute="0"+minute;
+	string second = to_string(simTime->tm_sec); if(second.size()<2) second="0"+second;
+	hour = to_string(simTime->tm_hour - 3); if(hour.size()<2) hour="0"+hour;
+	hour.append(minute);
+	hour.append(second);
+	const char* conversao = hour.c_str();
+	double timestamp = atof(conversao);
+
+
+	std::vector<double> valores (9);
+	/*TIMESTAMP*/						valores.at(0) = timestamp; 	
+	/*UTILIZACAO*/						valores.at(1) = (Upper-Lower)/(Upper+Lower); 	
+	/*ICMediaTempoEspera*/				valores.at(3) = EEW; 	
+	/*tstudentICVarianciaTempoEspera*/	valores.at(4) = VEW;
+	/*chisquareICVarianciaTempoEspera*/	valores.at(5) = 0; 	
+	/*ICMediaPessoas*/					valores.at(6) = 0; 								
+	/*tstudentICVarianciaPessoas*/		valores.at(7) = 0; 					
+	/*chisquareICVarianciaPessoas*/		valores.at(8) = 0;
+
+	/*POLITICA*/switch(fila.Tipo){
+		case TipoFila::FCFS:
+			valores.at(2) = 0;
+			break;
+		case TipoFila::LCFS:
+			valores.at(2) = 1;
+			break;
+		default:
+			valores.at(2) = 0;
+			break;
+	}
+
+	esc.EscreveLinhaEmCSV(9, valores);	   
 }

@@ -1,4 +1,5 @@
 #include "Escritor.hpp"
+#include<iostream>
 #include<fstream>
 using namespace std;
 
@@ -10,8 +11,9 @@ Escritor::Escritor(void){ }
 std::fstream Escritor::CriaCSV(){
     std::fstream arquivo;
     arquivo.open("results.csv", ios::out | ios::app | ios::binary);
-    arquivo << "EWRodada,EWRodada2,VWRodada,VWRodada2";
-    arquivo << "\n";
+        std::cout << "sim" << "\n";
+        arquivo << "Timestamp,Utilizacao,Politica,ICMediaTempoEspera,ICVarianciaTempoEspera(t-student),ICVarianciaTempoEspera(chi-square),ICMediaPessoas,ICVarianciaPessoas(t-student),ICVarianciaPessoas(chi-square)";
+        arquivo << "\n";
     return arquivo;
 }
 
