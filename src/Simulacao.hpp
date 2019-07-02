@@ -5,6 +5,7 @@
 #include "FilaMM1.hpp"
 #include "Escritor.hpp"
 #include "Rodada.hpp"
+#include "FaseTransiente.hpp"
 #include "GeradorAleatorio.hpp"
 
 class Simulacao {

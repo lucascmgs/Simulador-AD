@@ -14,6 +14,7 @@ Rodada::Rodada(int indiceRodada, int tamanhoRodada, FilaMM1 *fila){
 
 
 void Rodada::RealizaRodada(){
+    //Trata os eventos enquanto faltarem coletas para terminar a rodada
     while(this->Fila->EstatisticasColetadasTempoEspera < this->Tamanho) {
 			this->Fila->TrataProximoEvento();
 		}

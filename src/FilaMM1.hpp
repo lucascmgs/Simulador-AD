@@ -40,8 +40,10 @@ class FilaMM1{
     double TempoMedioDeAtendimento();
     double TempoMedioDeEsperaTotal();
     double EstimadorVarianciaDoTempoNaFilaDeEspera();
+    bool ChecaSeFilaInicializada();
 
     private:
+    bool inicializada = false;
     double temposNaFilaDeEspera = 0.0;
     double quadradosDosTemposDeEsperaNaFila = 0.0;
     double numeroDePessoasNaFilaVezesTempo = 0.0;
