@@ -1,10 +1,4 @@
 #include "Simulacao.hpp"
-#include <stdlib.h>
-#include <fstream>
-#include <cstdlib>
-#include <cstring>
-#include <string>
-#include <ctime>
 
 Simulacao::Simulacao(int n, int k, int seed, double lambda) {
     this->n = n;

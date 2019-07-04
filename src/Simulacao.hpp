@@ -1,13 +1,18 @@
 #ifndef SIMULACAO
 #define SIMULACAO
 
-#include <ctime>
 #include <iostream>
 #include "FilaMM1.hpp"
 #include "Escritor.hpp"
 #include "Rodada.hpp"
 #include "FaseTransiente.hpp"
 #include "GeradorAleatorio.hpp"
+#include <stdlib.h>
+#include <fstream>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <ctime>
 
 class Simulacao {
     public:
@@ -58,10 +63,6 @@ class Simulacao {
 	double Lower = 0.0;
 	//Limite superior do IC
 	double Upper = 0.0;
-
-	//Variáveis referentes à política de atendimento
-	// 0 = FCFS, 1 = LCFS
-	double PoliticaVigente;
 
     Simulacao(int n, int k, int seed, double lambda);
     void RodaSimulacao();
