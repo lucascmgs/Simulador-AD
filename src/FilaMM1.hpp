@@ -40,6 +40,10 @@ class FilaMM1{
     double TempoMedioDeAtendimento();
     double TempoMedioDeEsperaTotal();
     double EstimadorVarianciaDoTempoNaFilaDeEspera();
+    double EstimadorMediaTempoNoSistema();
+    double EstimadorVarianciaTempoNoSistema();
+    double EstimadorMediaTempoEmServico();
+    double EstimadorVarianciaTempoNoServico();
     bool ChecaSeFilaInicializada();
 
     private:

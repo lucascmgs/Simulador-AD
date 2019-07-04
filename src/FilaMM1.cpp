@@ -132,6 +132,24 @@ double FilaMM1::EstimadorMediaDosQuadradosDeNumerosDePessoasNaFilaDeEspera(doubl
     return this->quadradosDoNumeroDePessoasNaFilaVezesTempo / tempoTotalRodada;
 }
 
+double FilaMM1::EstimadorMediaTempoEmServico(){
+    return this->temposDeAtendimento/this->EstatisticasColetadasTempoEspera;
+}
+
+double FilaMM1::EstimadorVarianciaTempoEmServico(){
+    int n = this->EstatisticasColetadasTempoEspera;
+    return this->quadradosDosTemposDeServico/(n-1) - pow(this->EstatisticasColetadasTempoEspera,2)/(n*(n-1));
+}
+
+double FilaMM1::EstimadorVarianciaTempoNoSistema(){
+    int n = this->EstatisticasColetadasTempoEspera;
+    return this->quadradosDosTemposDeAtendimento/(n-1) - pow(this->EstatisticasColetadasTempoEspera,2)/(n*(n-1));
+}
+
+double FilaMM1::EstimadorMediaTempoNoSistema(){
+    return (this->temposDeAtendimento+this->temposNaFilaDeEspera)/this->EstatisticasColetadasTempoEspera;
+}
+
 //Cálculo do estimador da média do tempo de espera na fila de uma rodada (EWi)
 double FilaMM1::EstimadorMediaTempoNaFilaDeEspera(){
     return this->temposNaFilaDeEspera/this->EstatisticasColetadasTempoEspera;
@@ -156,6 +174,8 @@ void FilaMM1::ResetaEstatisticasRodada(){
     //Para W
     this->temposNaFilaDeEspera = 0.0;
     this->quadradosDosTemposDeEsperaNaFila = 0.0;
+    this->quadradosDosTemposDeServico = 0.0;
+    this->quadradosDosTemposDeAtendimento = 0.0;
     this->temposDeAtendimento = 0.0;
     this->temposDeEsperaTotal = 0.0;
     this->tempoOcupado = 0.0;

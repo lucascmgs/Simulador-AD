@@ -40,14 +40,33 @@ void Simulacao::RodaSimulacao() {
 }
 
 void Simulacao::AcumulaResultadosDaRodada(Rodada rod){
+
+	//Para W
 	this->EWRodadas += rod.EWRodada;
 	this->EWRodadas2 += rod.EWRodada2;
 	this->VWRodadas += rod.VWRodada;
 	this->VWRodadas2 += rod.VWRodada2;
+
+	//Para Nq
+	this->ENqRodadas += rod.ENqRodada;
+	this->ENqRodadas2 += rod.ENqRodada2;
+	this->VNqRodadas += rod.VNqRodada;
+	this->VNqRodadas2 += rod.VNqRodada2;
+
+	//Tempos em fila
+	this->Trodadas += rod.TempoMedioSistema;
+	this->Wrodadas += rod.TempoMedioFilaDeEspera;
+	this->Xrodadas += rod.TempoMedioServico;
+	this->VTrodadas += rod.VarianciaTempoMedioSistema;
+	this->VWrodadas += rod.VarianciaTempoMedioFilaDeEspera;
+	this->VXrodadas += rod.VarianciaTempoMedioServico;
 }
 
 
 void Simulacao::GeraEstatisticaSimulacao() {
+	std::cout << "VALOR DE LAMBDA VIGENTE: " << Lambda << std::endl;
+	std::cout << "\n";
+
     //Para W
 
 	EEW = this->EWRodadas/n;
@@ -60,8 +79,32 @@ void Simulacao::GeraEstatisticaSimulacao() {
 	std::cout << "VEW: " << VEW << std::endl;
 	std::cout << "EVW: " << EVW << std::endl;
 	std::cout << "VVW: " << VVW << std::endl;
+	std::cout << "\n";
 
-    //TODO: Para Nq
+	//Para Nq
+	EENq = this->ENqRodadas/n;
+	VENq = this->ENqRodadas2/(n-1) - pow(this->ENqRodadas, 2)/(n*(n-1));
+	EVNq = this->VNqRodadas/n;
+	VVNq = this->VNqRodadas2/(n-1) - pow(this->VNqRodadas, 2)/(n*(n-1));
+	
+	std::cout << "EENq estimado: " << EENq << std::endl;
+	std::cout << "VENq: " << VENq << std::endl;
+	std::cout << "EVNq: " << EVNq << std::endl;
+	std::cout << "VVNq: " << VVNq << std::endl;
+	std::cout << "\n";
+
+	//Tempos associados
+	Tbarra = Trodadas/n;
+	VTbarra = VTrodadas/n;
+	Wbarra = Wrodadas/n;
+	VWbarra = VWrodadas/n;
+	Xbarra = Xrodadas/n;
+	VXbarra = VXrodadas/n;
+	
+	std::cout << "Tempo médio de espera: " << Tbarra << std::endl;
+	std::cout << "Tempo médio na fila: " << Wbarra << std::endl;
+	std::cout << "Tempo médio em serviço: " << Xbarra << std::endl;
+	std::cout << "\n";
 }
 
 void Simulacao::GeraIntervaloDeConfianca() {
@@ -73,15 +116,49 @@ void Simulacao::GeraIntervaloDeConfianca() {
 
 	std::cout << "IC E[W]: [" << Lower << ", " << EEW << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;
 
-    //Para V(W)
+	//Para V(W), chi-quadrado
+	Lower = (k * (n-1)*VEW)/chiSuperior;
+	Upper = (k * (n-1)*VEW)/chiInferior;
+
+	precisao = (Upper-Lower)/(Upper+Lower);
+
+	std::cout << "IC V(W) chi-quadrado: [" << Lower << ", " << VEW*k << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;
+
+
+    //Para V(W), t-student
 	Lower = EVW - t * sqrt(VVW)/sqrt(n);
 	Upper = EVW + t * sqrt(VVW)/sqrt(n);
 
 	precisao = (Upper-Lower)/(Upper+Lower);
 
-	std::cout << "IC V[W]: [" << Lower << ", " << EVW << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;   
 
-    //TODO: Para E[Nq] 
+	std::cout << "IC V(W) t-Student: [" << Lower << ", " << EVW << ", " << Upper << "] |Precisão: "<< precisao <<"|" << std::endl;   
+
+    //Para E[Nq] 
+	Lower = EENq - t*sqrt(VENq)/sqrt(n);
+	Upper = EENq + t*sqrt(VENq)/sqrt(n);
+
+	precisao = (Upper-Lower)/(Upper+Lower);
+
+	std::cout << "IC E[Nq]: [" << Lower << ", " << EENq << ", " << Upper << " ] |Precisão: "<< precisao << "|" << std::endl;
+
+	//Para V(Nq), chi-quadrado
+
+	Lower = (k * (n-1)*VENq)/chiSuperior;
+	Upper = (k * (n-1)*VENq)/chiInferior;
+
+	precisao = (Upper-Lower)/(Upper+Lower);
+
+	std::cout << "IC V(Nq) chi-quadrado: [" << Lower << ", " << VENq*k << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;
+
+
+    //Para V(Nq), t-student	
+	Lower = EVNq - t * sqrt(VVNq)/sqrt(n);
+	Upper = EVNq + t * sqrt(VVNq)/sqrt(n);
+
+	precisao = (Upper-Lower)/(Upper+Lower);
+
+	std::cout << "IC V(Nq) t-Student: [" << Lower << ", " << EVNq << ", " << Upper << "] |Precisão: "<< precisao <<"|" << std::endl;   
 
     //TODO: Para V(Nq) 
 

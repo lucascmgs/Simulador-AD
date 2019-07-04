@@ -12,6 +12,10 @@ class Rodada{
     //numero da rodada atual
     int Indice;
 
+
+	//Tempo de início da rodada
+	double TempoInicio;
+
 	//Tamanho da rodada
 	int Tamanho;
 
@@ -34,6 +38,15 @@ class Rodada{
 	double VNqRodada = 0.0;
 	//Soma dos quadrados das variâncias do número de pessoas na fila da rodada
 	double VNqRodada2 = 0.0;
+
+	double TempoMedioSistema = 0.0;
+	double VarianciaTempoMedioSistema = 0.0;
+	double TempoMedioFilaDeEspera = 0.0;
+    double VarianciaTempoMedioFilaDeEspera = 0.0;
+	double TempoMedioServico = 0.0;
+    double VarianciaTempoMedioServico = 0.0;
+    double numeroPessoas = 0.0;
+    double numeroPessoasQuadrado = 0.0;
 	
     Rodada(int indiceRodada, int tamanhoRodada, FilaMM1 *fila);
 	void RealizaRodada();
