@@ -113,7 +113,9 @@ void FilaMM1::GeraEstatisticaTempoEsperaNaFila(Fregues fregues){
     this->quadradosDosTemposDeEsperaNaFila += pow(tempoDeEsperaDoFregues, 2);
 
     this->temposDeAtendimento += (fregues.TempoSaida - fregues.TempoDeEntradaEmServico);
+    this->quadradosDosTemposDeAtendimento += pow(temposDeAtendimento, 2);
     this->temposDeEsperaTotal += (fregues.TempoSaida - fregues.TempoChegada);
+    this->quadradosDosTemposDeEsperaTotal += pow(temposDeEsperaTotal, 2);
 }
 
 double FilaMM1::EstimadorMediaDoNumeroDePessoasNaFilaDeEspera(double tempoInicioRodada){
@@ -132,35 +134,31 @@ double FilaMM1::EstimadorMediaDosQuadradosDeNumerosDePessoasNaFilaDeEspera(doubl
     return this->quadradosDoNumeroDePessoasNaFilaVezesTempo / tempoTotalRodada;
 }
 
+//Cálculo do estimador da média do tempo de serviço de uma rodada (EXi)
 double FilaMM1::EstimadorMediaTempoEmServico(){
     return this->temposDeAtendimento/this->EstatisticasColetadasTempoEspera;
 }
 
+//Cálculo do estimador da variância do tempo de serviço de uma rodada (VXi)
 double FilaMM1::EstimadorVarianciaTempoEmServico(){
     int n = this->EstatisticasColetadasTempoEspera;
-    return this->quadradosDosTemposDeServico/(n-1) - pow(this->EstatisticasColetadasTempoEspera,2)/(n*(n-1));
+    return this->quadradosDosTemposDeAtendimento/(n-1) - pow(this->EstatisticasColetadasTempoEspera,2)/(n*(n-1));
 }
 
+//Cálculo do estimador da média do tempo de permanência no sistema de uma rodada (ETi)
+double FilaMM1::EstimadorMediaTempoNoSistema(){
+    return (this->temposDeAtendimento+this->temposNaFilaDeEspera)/this->EstatisticasColetadasTempoEspera;
+}
+
+//Cálculo do estimador da variância do tempo de permanência no sistema de uma rodada (VTi)
 double FilaMM1::EstimadorVarianciaTempoNoSistema(){
     int n = this->EstatisticasColetadasTempoEspera;
     return this->quadradosDosTemposDeAtendimento/(n-1) - pow(this->EstatisticasColetadasTempoEspera,2)/(n*(n-1));
 }
 
-double FilaMM1::EstimadorMediaTempoNoSistema(){
-    return (this->temposDeAtendimento+this->temposNaFilaDeEspera)/this->EstatisticasColetadasTempoEspera;
-}
-
 //Cálculo do estimador da média do tempo de espera na fila de uma rodada (EWi)
 double FilaMM1::EstimadorMediaTempoNaFilaDeEspera(){
     return this->temposNaFilaDeEspera/this->EstatisticasColetadasTempoEspera;
-}
-
-double FilaMM1::TempoMedioDeAtendimento(){
-    return this->temposDeAtendimento/this->EstatisticasColetadasTempoEspera;
-}
-
-double FilaMM1::TempoMedioDeEsperaTotal(){
-    return this->temposDeEsperaTotal/this->EstatisticasColetadasTempoEspera;
 }
 
 //Cálculo do estimador da variância do tempo de espera na fila de uma rodada (VWi)
@@ -173,11 +171,11 @@ double FilaMM1::EstimadorVarianciaDoTempoNaFilaDeEspera(){
 void FilaMM1::ResetaEstatisticasRodada(){
     //Para W
     this->temposNaFilaDeEspera = 0.0;
-    this->quadradosDosTemposDeEsperaNaFila = 0.0;
-    this->quadradosDosTemposDeServico = 0.0;
-    this->quadradosDosTemposDeAtendimento = 0.0;
     this->temposDeAtendimento = 0.0;
     this->temposDeEsperaTotal = 0.0;
+    this->quadradosDosTemposDeEsperaNaFila = 0.0;
+    this->quadradosDosTemposDeEsperaTotal = 0.0;
+    this->quadradosDosTemposDeAtendimento = 0.0;
     this->tempoOcupado = 0.0;
     this->EstatisticasColetadasTempoEspera = 0;
 

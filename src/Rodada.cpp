@@ -27,11 +27,11 @@ void Rodada::ColetaResultadosDaRodada(){
     this->TempoMedioFilaDeEspera = this->Fila->EstimadorMediaTempoNaFilaDeEspera();
     this->VarianciaTempoMedioFilaDeEspera = this->Fila->EstimadorVarianciaDoTempoNaFilaDeEspera();
     //Tempo médio em serviço
-    this->TempoMedioServico = this->Fila->EstimadorMediaTempoNaFilaDeEspera();
-    this->VarianciaTempoMedioServico = this->Fila->EstimadorVarianciaDoTempoNaFilaDeEspera();    
+    this->TempoMedioServico = this->Fila->EstimadorMediaTempoEmServico();
+    this->VarianciaTempoMedioServico = this->Fila->EstimadorVarianciaTempoEmServico();    
     //Tempo médio no sistema
-    this->TempoMedioSistema = this->Fila->EstimadorMediaTempoNaFilaDeEspera();
-    this->VarianciaTempoMedioSistema = this->Fila->EstimadorVarianciaDoTempoNaFilaDeEspera();
+    this->TempoMedioSistema = this->Fila->EstimadorMediaTempoNoSistema();
+    this->VarianciaTempoMedioSistema = this->Fila->EstimadorVarianciaTempoNoSistema();
     //Numero médio de pessoas na fila de espera
     double numeroPessoas = this->Fila->EstimadorMediaDoNumeroDePessoasNaFilaDeEspera(this->TempoInicio);
     double numeroPessoasQuadrado = this->Fila->EstimadorMediaDosQuadradosDeNumerosDePessoasNaFilaDeEspera(this->TempoInicio);

@@ -37,13 +37,11 @@ class FilaMM1{
     double EstimadorMediaDoNumeroDePessoasNaFilaDeEspera(double tempoInicioRodada);
     double EstimadorMediaDosQuadradosDeNumerosDePessoasNaFilaDeEspera(double tempoInicioRodada);
     double EstimadorMediaTempoNaFilaDeEspera();
-    double TempoMedioDeAtendimento();
-    double TempoMedioDeEsperaTotal();
     double EstimadorVarianciaDoTempoNaFilaDeEspera();
     double EstimadorMediaTempoNoSistema();
     double EstimadorVarianciaTempoNoSistema();
     double EstimadorMediaTempoEmServico();
-    double EstimadorVarianciaTempoNoServico();
+    double EstimadorVarianciaTempoEmServico();
     bool ChecaSeFilaInicializada();
 
     private:
@@ -53,7 +51,9 @@ class FilaMM1{
     double numeroDePessoasNaFilaVezesTempo = 0.0;
     double quadradosDoNumeroDePessoasNaFilaVezesTempo = 0.0;
     double temposDeAtendimento = 0.0;
+    double quadradosDosTemposDeAtendimento = 0.0;
     double temposDeEsperaTotal = 0.0;
+    double quadradosDosTemposDeEsperaTotal = 0.0;
     double tempoOcupado = 0.0;
 
     void GeraProximaChegada();
