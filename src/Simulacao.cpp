@@ -100,10 +100,10 @@ void Simulacao::GeraEstatisticaSimulacao() {
 	VWbarra = VWrodadas/n;
 	Xbarra = Xrodadas/n;
 	VXbarra = VXrodadas/n;
-	
-	std::cout << "Tempo médio de espera: " << Tbarra << std::endl;
-	std::cout << "Tempo médio na fila: " << Wbarra << std::endl;
+
+	std::cout << "Tempo médio no sistema (Xbarra + Wbarra): " << Tbarra << std::endl;
 	std::cout << "Tempo médio em serviço: " << Xbarra << std::endl;
+	std::cout << "Tempo médio na fila: " << Wbarra << std::endl;
 	std::cout << "\n";
 }
 
