@@ -170,7 +170,7 @@ void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 	file.open("results.csv");
 	if(file.fail()){
 		std::vector<string> linha (1);
-		linha.at(0) = "Timestamp,Utilizacao,Politica,ICMediaTempoEspera,ICVarianciaTempoEspera(t-student),ICVarianciaTempoEspera(chi-square),ICMediaPessoas,ICVarianciaPessoas(t-student),ICVarianciaPessoas(chi-square)";
+		linha.at(0) = "Timestamp,Utilizacao,Politica,ICMediaTempoEspera,ICVarianciaTempoEspera(t-student),Tempo médio na fila,Tempo médio no serviço,Tempo médio no sistema,lambda";
 		esc.EscreveCabecalhoEmCSV(1, linha);	
 	}
 	file.close();
@@ -190,10 +190,10 @@ void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 	/*UTILIZACAO*/						valores.at(1) = (Upper-Lower)/(Upper+Lower); 	
 	/*ICMediaTempoEspera*/				valores.at(3) = EEW; 	
 	/*tstudentICVarianciaTempoEspera*/	valores.at(4) = VEW;
-	/*chisquareICVarianciaTempoEspera*/	valores.at(5) = 0; 	
-	/*ICMediaPessoas*/					valores.at(6) = 0; 								
-	/*tstudentICVarianciaPessoas*/		valores.at(7) = 0; 					
-	/*chisquareICVarianciaPessoas*/		valores.at(8) = 0;
+	/*chisquareICVarianciaTempoEspera*/	valores.at(5) = Wbarra; 	
+	/*Wbarra*/							valores.at(6) = Xbarra; 								
+	/*Xbarra*/							valores.at(7) = Tbarra; 					
+	/*Tbarra*/							valores.at(8) = Lambda;
 
 	/*POLITICA*/switch(fila.Tipo){
 		case TipoFila::FCFS:

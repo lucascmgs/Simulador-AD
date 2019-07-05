@@ -15,6 +15,8 @@ int main(int argc, char* argv[])
 	int seed = time(NULL);
 	//Valor default para a utilização/taxa de chegada (rho = lambda*E[X], mas como E[X] = 1, então rho = lambda)
     double lambda = 0.2;
+	//Valor de simulações rodadas em uma execução do programa.
+	int nsim = 1;
 
     //Permite testar o simulador com diferentes parâmetros
 	for (int i = 1; i < argc; i++) {
@@ -31,8 +33,14 @@ int main(int argc, char* argv[])
 			if (strcmp(argv[i], "-lambda") == 0) {
 				lambda = atof(argv[i + 1]);
 			}
+			if (strcmp(argv[i], "-nsim") == 0){
+				nsim = atoi(argv[i+1]);
+			}
 		}
 	}
-	Simulacao sim = Simulacao(n, k, seed, lambda);
-	sim.RodaSimulacao();
+	for (int i = 0 ; i < nsim ; i++){
+		Simulacao sim = Simulacao(n, k, seed, lambda);
+		sim.RodaSimulacao();
+		seed = (time(NULL)+1);
+	}
 }
