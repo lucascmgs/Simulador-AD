@@ -7,6 +7,12 @@
 #include "Rodada.hpp"
 #include "FaseTransiente.hpp"
 #include "GeradorAleatorio.hpp"
+#include <stdlib.h>
+#include <fstream>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <ctime>
 
 class Simulacao {
     public:
@@ -74,6 +80,7 @@ class Simulacao {
     void RodaSimulacao();
     void GeraEstatisticaSimulacao();
     void GeraIntervalosDeConfianca();
+	void ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime);
 	void AcumulaResultadosDaRodada(Rodada rod);
 };
 

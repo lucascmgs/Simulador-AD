@@ -1,4 +1,5 @@
 #include "string.h"
+#include <stdlib.h>
 #include <iostream>
 #include "FilaMM1.hpp"
 #include "GeradorAleatorio.hpp"
