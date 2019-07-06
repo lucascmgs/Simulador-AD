@@ -147,7 +147,7 @@ void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 	file.open("results.csv");
 	if(file.fail()){
 		std::vector<string> linha (1);
-		linha.at(0) = "Timestamp,Utilizacao,Politica,ICMediaTempoEspera,ICVarianciaTempoEspera(t-student),ICVarianciaTempoEspera(chi-square),ICMediaPessoas,ICVarianciaPessoas(t-student),ICVarianciaPessoas(chi-square)";
+		linha.at(0) = "Timestamp,Precisão,Politica,ICMediaTempoEspera,ICVarianciaTempoEspera(t-student),ICVarianciaTempoEspera(chi-square),ICMediaPessoas,ICVarianciaPessoas(t-student),ICVarianciaPessoas(chi-square)";
 		esc.EscreveCabecalhoEmCSV(1, linha);	
 	}
 	file.close();
