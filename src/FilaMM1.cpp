@@ -161,8 +161,7 @@ void FilaMM1::ResetaEstatisticasRodada(){
     this->tempoOcupado = 0.0;
     this->EstatisticasColetadasTempoEspera = 0;
 
-    //TODO: Para Nq
-
+    //Para Nq
     this->numeroDePessoasNaFilaVezesTempo = 0.0;
     this->quadradosDoNumeroDePessoasNaFilaVezesTempo = 0.0;
 

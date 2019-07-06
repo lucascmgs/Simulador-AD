@@ -30,7 +30,6 @@ void Simulacao::RodaSimulacao() {
 
 	}
 	//fim da simulação
-	std::cout << "---- FIM DA SIMULACAO " << " ----" << std::endl;
     GeraEstatisticaSimulacao();
     GeraIntervalosDeConfianca();
 }
@@ -53,86 +52,88 @@ void Simulacao::AcumulaResultadosDaRodada(Rodada rod){
 void Simulacao::GeraEstatisticaSimulacao() {
 	Escritor esc = Escritor();
     //Para W
-
 	EEW = this->EWRodadas/n;
 	VEW = this->EWRodadas2/(n-1) - pow(this->EWRodadas, 2)/(n*(n-1));
 	EVW = this->VWRodadas/n;
 	VVW = this->VWRodadas2/(n-1) - pow(this->VWRodadas, 2)/(n*(n-1));
 
 	//Para Nq
-
 	EENq = this->ENqRodadas/n;
 	VENq = this->ENqRodadas2/(n-1) - pow(this->ENqRodadas, 2)/(n*(n-1));
 	EVNq = this->VNqRodadas/n;
 	VVNq = this->VNqRodadas2/(n-1) - pow(this->VNqRodadas, 2)/(n*(n-1));
 
+	//Valores analíticos (desenvolvimento das contas está no relatório)
+	double EWAnalitico = Lambda/(1-Lambda); 
+	double VWAnalitico = (2*Lambda-(Lambda*Lambda))/(1-(Lambda*Lambda));
+	double ENqAnalitico = (Lambda*Lambda)/(1-Lambda);
+	double VNqAnalitico = (pow(Lambda, 2)+pow(Lambda, 3)-pow(Lambda, 4))/pow((1-Lambda), 2);
+
     std::vector<string> linha (1);
     linha.at(0) = "VA,EEW,VEW,EVW,VVW";
     esc.EscreveCabecalhoEmCSV(1, linha);
 	std::vector<double> valores (5);
-    valores.at(0) = Lambda/(1-Lambda); valores.at(1) = EEW; valores.at(2) = VEW; valores.at(3) = EVW; valores.at(4) = VVW;
+    valores.at(0) = EWAnalitico; valores.at(1) = EEW; valores.at(2) = VEW; valores.at(3) = EVW; valores.at(4) = VVW;
 	esc.EscreveLinhaEmCSV(5, valores);
-	    
-	std::cout << "Valor Analítico para EEW: " << Lambda/(1-Lambda) << std::endl;
-	std::cout << "EEW estimado: " << EEW << std::endl;
-	std::cout << "VEW: " << VEW << std::endl;
-	std::cout << "EVW: " << EVW << std::endl;
-	std::cout << "VVW: " << VVW << std::endl;
+	//TODO: escrever para Nq tambem
 
-    //TODO: Para Nq
+	std::cout << "---- W ----" << std::endl;
+	std::cout << "Valor Analítico para E[W]: " << EWAnalitico << std::endl;
+	std::cout << "E[W] estimado: " << EEW << std::endl;
+	std::cout << "V[E[W]]: " << VEW << std::endl;
+	std::cout << "Valor Analítico para V[W]: " << VWAnalitico << std::endl;
+	std::cout << "V[W] estimado: " << EVW << std::endl;
+	std::cout << "V[V[W]]: " << VVW << std::endl;
+
+	std::cout << "\n---- Nq ----" << std::endl;
+	std::cout << "Valor Analítico para E[Nq]: " << ENqAnalitico << std::endl;
+	std::cout << "E[Nq] estimado: " << EENq << std::endl;
+	std::cout << "V[E[Nq]]: " << VENq << std::endl;
+	std::cout << "Valor Analítico para V[Nq]: " << VNqAnalitico << std::endl;
+	std::cout << "V[Nq] estimado: " << EVNq << std::endl;
+	std::cout << "V[V[Nq]]: " << VVNq << std::endl;
 }
 
 void Simulacao::GeraIntervalosDeConfianca() {
-    //Para E[W]
+    //Para E[W], t-student
 	Lower = EEW - t * sqrt(VEW)/sqrt(n);
 	Upper = EEW + t * sqrt(VEW)/sqrt(n);
-
 	double precisao = (Upper-Lower)/(Upper+Lower);
-
-	std::cout << "IC E[W]: [" << Lower << ", " << EEW << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;
+	std::cout << "\n---- IC E[W] (t-Student) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << EEW << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
 
 	//Para V(W), chi-quadrado
 	Lower = (k * (n-1)*VEW)/chiSuperior;
 	Upper = (k * (n-1)*VEW)/chiInferior;
-
 	precisao = (Upper-Lower)/(Upper+Lower);
-
-	std::cout << "IC V(W) chi-quadrado: [" << Lower << ", " << VEW*k << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;
-
+	std::cout << "---- IC V[W] (chi-quadrado) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << VEW*k << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
 
     //Para V(W), t-student
 	Lower = EVW - t * sqrt(VVW)/sqrt(n);
 	Upper = EVW + t * sqrt(VVW)/sqrt(n);
-
 	precisao = (Upper-Lower)/(Upper+Lower);
-
-	std::cout << "IC V(W) t-Student: [" << Lower << ", " << EVW << ", " << Upper << "] |Precisão: "<< precisao <<"|" << std::endl;   
+	std::cout << "---- IC V[W] (t-Student) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << EVW << ", " << Upper << " |Precisão: "<< precisao <<"]\n" << std::endl;   
 
     //Para E[Nq] 
 	Lower = EENq - t*sqrt(VENq)/sqrt(n);
 	Upper = EENq + t*sqrt(VENq)/sqrt(n);
-
 	precisao = (Upper-Lower)/(Upper+Lower);
-
-	std::cout << "IC E[Nq]: [" << Lower << ", " << EENq << ", " << Upper << " ] |Precisão: "<< precisao << "|" << std::endl;
+	std::cout << "---- IC E(Nq) (t-Student) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << EENq << ", " << Upper << " ] |Precisão: "<< precisao << "]\n" << std::endl;
 
 	//Para V(Nq), chi-quadrado
-
 	Lower = (k * (n-1)*VENq)/chiSuperior;
 	Upper = (k * (n-1)*VENq)/chiInferior;
-
 	precisao = (Upper-Lower)/(Upper+Lower);
-
-	std::cout << "IC V(Nq) chi-quadrado: [" << Lower << ", " << VENq*k << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;
-
+	std::cout << "---- IC V(Nq) (chi-quadrado) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << VENq*k << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
 
     //Para V(Nq), t-student	
 	Lower = EVNq - t * sqrt(VVNq)/sqrt(n);
 	Upper = EVNq + t * sqrt(VVNq)/sqrt(n);
-
 	precisao = (Upper-Lower)/(Upper+Lower);
-
-	std::cout << "IC V(Nq) t-Student: [" << Lower << ", " << EVNq << ", " << Upper << "] |Precisão: "<< precisao <<"|" << std::endl;   
-
-
+	std::cout << "---- IC V(Nq) (t-student) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << EVNq << ", " << Upper << "] |Precisão: "<< precisao <<"]\n" << std::endl;   
 }
