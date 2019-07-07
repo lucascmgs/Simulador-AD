@@ -93,43 +93,43 @@ void Simulacao::GeraEstatisticaSimulacao() {
 
 void Simulacao::GeraIntervalosDeConfianca() {
     //Para E[W], t-student
-	Lower = EEW - t * sqrt(VEW)/sqrt(n);
-	Upper = EEW + t * sqrt(VEW)/sqrt(n);
+	Lower = EEW - t * sqrt(VEW)/sqrt(n*k);
+	Upper = EEW + t * sqrt(VEW)/sqrt(n*k);
 	double precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "\n---- IC E[W] (t-Student) ----" << std::endl;
 	std::cout << "[" << Lower << ", " << EEW << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
 
 	//Para V(W), chi-quadrado
-	Lower = (k * (n-1)*VEW)/chiSuperior;
-	Upper = (k * (n-1)*VEW)/chiInferior;
+	Lower = ((n-1)*EVW)/chiSuperior;
+	Upper = ((n-1)*EVW)/chiInferior;
 	precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "---- IC V[W] (chi-quadrado) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << VEW*k << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
+	std::cout << "[" << Lower << ", " << EVW << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
 
     //Para V(W), t-student
-	Lower = EVW - t * sqrt(VVW)/sqrt(n);
-	Upper = EVW + t * sqrt(VVW)/sqrt(n);
+	Lower = EVW - t * sqrt(VVW)/sqrt(n*k);
+	Upper = EVW + t * sqrt(VVW)/sqrt(n*k);
 	precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "---- IC V[W] (t-Student) ----" << std::endl;
 	std::cout << "[" << Lower << ", " << EVW << ", " << Upper << " |Precisão: "<< precisao <<"]\n" << std::endl;   
 
     //Para E[Nq] 
-	Lower = EENq - t*sqrt(VENq)/sqrt(n);
-	Upper = EENq + t*sqrt(VENq)/sqrt(n);
+	Lower = EENq - t*sqrt(VENq)/sqrt(n*k);
+	Upper = EENq + t*sqrt(VENq)/sqrt(n*k);
 	precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "---- IC E(Nq) (t-Student) ----" << std::endl;
 	std::cout << "[" << Lower << ", " << EENq << ", " << Upper << " ] |Precisão: "<< precisao << "]\n" << std::endl;
 
 	//Para V(Nq), chi-quadrado
-	Lower = (k * (n-1)*VENq)/chiSuperior;
-	Upper = (k * (n-1)*VENq)/chiInferior;
+	Lower = ((n-1)*EVNq)/chiSuperior;
+	Upper = ((n-1)*EVNq)/chiInferior;
 	precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "---- IC V(Nq) (chi-quadrado) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << VENq*k << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
+	std::cout << "[" << Lower << ", " << EVNq << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
 
     //Para V(Nq), t-student	
-	Lower = EVNq - t * sqrt(VVNq)/sqrt(n);
-	Upper = EVNq + t * sqrt(VVNq)/sqrt(n);
+	Lower = EVNq - t * sqrt(VVNq)/sqrt(n*k);
+	Upper = EVNq + t * sqrt(VVNq)/sqrt(n*k);
 	precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "---- IC V(Nq) (t-student) ----" << std::endl;
 	std::cout << "[" << Lower << ", " << EVNq << ", " << Upper << "] |Precisão: "<< precisao <<"]\n" << std::endl;   
