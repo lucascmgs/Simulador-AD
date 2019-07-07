@@ -54,6 +54,8 @@ void Simulacao::AcumulaResultadosDaRodada(Rodada rod){
 
 
 void Simulacao::GeraEstatisticaSimulacao() {
+	std::cout << "PARÂMETROS UTILIZADOS" << std::endl;
+	std::cout << "n: " << n << ", k: " << k << ", lambda: " << Lambda << "\n" << std::endl;
     //Para W
 	EEW = this->EWRodadas/n;
 	VEW = this->EWRodadas2/(n-1) - pow(this->EWRodadas, 2)/(n*(n-1));
@@ -71,14 +73,6 @@ void Simulacao::GeraEstatisticaSimulacao() {
 	double VWAnalitico = (2*Lambda-(Lambda*Lambda))/(1-(Lambda*Lambda));
 	double ENqAnalitico = (Lambda*Lambda)/(1-Lambda);
 	double VNqAnalitico = (pow(Lambda, 2)+pow(Lambda, 3)-pow(Lambda, 4))/pow((1-Lambda), 2);
-
-    std::vector<string> linha (1);
-    linha.at(0) = "VA,EEW,VEW,EVW,VVW";
-    esc.EscreveCabecalhoEmCSV(1, linha);
-	std::vector<double> valores (5);
-    valores.at(0) = EWAnalitico; valores.at(1) = EEW; valores.at(2) = VEW; valores.at(3) = EVW; valores.at(4) = VVW;
-	esc.EscreveLinhaEmCSV(5, valores);
-	//TODO: escrever para Nq tambem
 
 	std::cout << "---- W ----" << std::endl;
 	std::cout << "Valor Analítico para E[W]: " << EWAnalitico << std::endl;
