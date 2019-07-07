@@ -46,45 +46,84 @@ void Simulacao::AcumulaResultadosDaRodada(Rodada rod){
 	this->VWRodadas2 += rod.VWRodada2;
 }
 
-
 void Simulacao::GeraEstatisticaSimulacao() {
+	std::cout << "PARÂMETROS UTILIZADOS" << std::endl;
+	std::cout << "n: " << n << ", k: " << k << ", lambda: " << Lambda << "\n" << std::endl;
+
     //Para W
 
 	EEW = this->EWRodadas/n;
 	VEW = this->EWRodadas2/(n-1) - pow(this->EWRodadas, 2)/(n*(n-1));
-	EVW = this->VWRodadas/n;
-	VVW = this->VWRodadas2/(n-1) - pow(this->VWRodadas, 2)/(n*(n-1)); 
-	
-	std::cout << "Valor Analítico para EEW: " << Lambda/(1-Lambda) << std::endl;
-	std::cout << "EEW estimado: " << EEW << std::endl;
-	std::cout << "VEW: " << VEW << std::endl;
-	std::cout << "EVW: " << EVW << std::endl;
-	std::cout << "VVW: " << VVW << std::endl;
+	EVW = this->VWRodadas/n; 
+	VVW = this->VWRodadas2/(n-1) - pow(this->VWRodadas, 2)/(n*(n-1));
 
-    //TODO: Para Nq
+	//Para Nq
+	EENq = this->ENqRodadas/n;
+	VENq = this->ENqRodadas2/(n-1) - pow(this->ENqRodadas, 2)/(n*(n-1));
+	EVNq = this->VNqRodadas/n;
+	VVNq = this->VNqRodadas2/(n-1) - pow(this->VNqRodadas, 2)/(n*(n-1));
+
+	//Valores analíticos (desenvolvimento das contas está no relatório)
+	double EWAnalitico = Lambda/(1-Lambda); 
+	double VWAnalitico = (2*Lambda-(Lambda*Lambda))/(1-(Lambda*Lambda));
+	double ENqAnalitico = (Lambda*Lambda)/(1-Lambda);
+	double VNqAnalitico = (pow(Lambda, 2)+pow(Lambda, 3)-pow(Lambda, 4))/pow((1-Lambda), 2);
+
+	std::cout << "---- W ----" << std::endl;
+	std::cout << "Valor Analítico para E[W]: " << EWAnalitico << std::endl;
+	std::cout << "E[W] estimado: " << EEW << std::endl;
+	std::cout << "V[E[W]]: " << VEW << std::endl;
+	std::cout << "Valor Analítico para V[W]: " << VWAnalitico << std::endl;
+	std::cout << "V[W] estimado: " << EVW << std::endl;
+	std::cout << "V[V[W]]: " << VVW << std::endl;
+
+	std::cout << "\n---- Nq ----" << std::endl;
+	std::cout << "Valor Analítico para E[Nq]: " << ENqAnalitico << std::endl;
+	std::cout << "E[Nq] estimado: " << EENq << std::endl;
+	std::cout << "V[E[Nq]]: " << VENq << std::endl;
+	std::cout << "Valor Analítico para V[Nq]: " << VNqAnalitico << std::endl;
+	std::cout << "V[Nq] estimado: " << EVNq << std::endl;
+	std::cout << "V[V[Nq]]: " << VVNq << std::endl;
 }
 
-void Simulacao::GeraIntervaloDeConfianca() {
-    //Para E[W]
-	Lower = EEW - t * sqrt(VEW)/sqrt(n);
-	Upper = EEW + t * sqrt(VEW)/sqrt(n);
-
+void Simulacao::GeraIntervalosDeConfianca() {
+    //Para E[W], t-student
+	Lower = EEW - t * sqrt(VEW)/sqrt(n*k);
+	Upper = EEW + t * sqrt(VEW)/sqrt(n*k);
 	double precisao = (Upper-Lower)/(Upper+Lower);
 
-	std::cout << "IC E[W]: [" << Lower << ", " << EEW << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;
+	//Para V(W), chi-quadrado
+	Lower = ((n-1)*EVW)/chiSuperior;
+	Upper = ((n-1)*EVW)/chiInferior;
+	precisao = (Upper-Lower)/(Upper+Lower);
+	std::cout << "---- IC V[W] (chi-quadrado) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << EVW << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
 
-    //Para V(W)
-	Lower = EVW - t * sqrt(VVW)/sqrt(n);
-	Upper = EVW + t * sqrt(VVW)/sqrt(n);
+    //Para V(W), t-student
+	Lower = EVW - t * sqrt(VVW)/sqrt(n*k);
+	Upper = EVW + t * sqrt(VVW)/sqrt(n*k);
+	precisao = (Upper-Lower)/(Upper+Lower);
+	std::cout << "---- IC V[W] (t-Student) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << EVW << ", " << Upper << " |Precisão: "<< precisao <<"]\n" << std::endl;   
 
+    //Para E[Nq] 
+	Lower = EENq - t*sqrt(VENq)/sqrt(n*k);
+	Upper = EENq + t*sqrt(VENq)/sqrt(n*k);
 	precisao = (Upper-Lower)/(Upper+Lower);
 
-	std::cout << "IC V[W]: [" << Lower << ", " << EVW << ", " << Upper << " | Precisão: "<< precisao <<"]" << std::endl;   
+	//Para V(Nq), chi-quadrado
+	Lower = ((n-1)*EVNq)/chiSuperior;
+	Upper = ((n-1)*EVNq)/chiInferior;
+	precisao = (Upper-Lower)/(Upper+Lower);
+	std::cout << "---- IC V(Nq) (chi-quadrado) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << EVNq << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
 
-    //TODO: Para E[Nq] 
-
-    //TODO: Para V(Nq) 
-
+    //Para V(Nq), t-student	
+	Lower = EVNq - t * sqrt(VVNq)/sqrt(n*k);
+	Upper = EVNq + t * sqrt(VVNq)/sqrt(n*k);
+	precisao = (Upper-Lower)/(Upper+Lower);
+	std::cout << "---- IC V(Nq) (t-student) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << EVNq << ", " << Upper << "] |Precisão: "<< precisao <<"]\n" << std::endl;   
 }
 
 void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
