@@ -25,6 +25,8 @@ class Simulacao {
 	int Seed = 0;
 	//Valor da utilização/taxa de chegada
     double Lambda = 0;
+	//Política de atendimento (0 para FCFS e 1 para LCFS)
+	int PoliticaAtendimento = 0;
     
     //Estatísticas da Simulação
 	//Para W
@@ -76,7 +78,7 @@ class Simulacao {
 	//Limite superior do IC
 	double Upper = 0.0;
 
-    Simulacao(int n, int k, int seed, double lambda);
+    Simulacao(int n, int k, int seed, double lambda, int politicaAtendimento);
     void RodaSimulacao();
     void GeraEstatisticaSimulacao();
     void GeraIntervalosDeConfianca();

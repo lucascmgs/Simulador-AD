@@ -17,8 +17,8 @@ Rodada::Rodada(int indiceRodada, int tamanhoRodada, FilaMM1 *fila){
 void Rodada::RealizaRodada(){
     //Trata os eventos enquanto faltarem coletas para terminar a rodada
     while(this->Fila->EstatisticasColetadasTempoEspera < this->Tamanho) {
-			this->Fila->TrataProximoEvento();
-		}
+        this->Fila->TrataProximoEvento();
+    }
 }
 
 //Função que coleta resultados da fila para a rodada
@@ -41,12 +41,12 @@ void Rodada::ColetaResultadosDaRodada(){
     //linha.at(0) = this->EWRodada; linha.at(1) = this->EWRodada2; linha.at(2) = this->VWRodada; linha.at(3) = this->VWRodada2;
     //arquivo = esc.EscreveLinhaEmCSV(4, linha);
 
-	//std::cout << "---- FIM DA RODADA " << this->Indice << " ----" << std::endl;
-	//std::cout << "est coletadas: EWRodada,EWRodada2,VWRodada,VWRodada2" << std::endl;
-	//std::cout << "EWRodada: " << EWRodada << std::endl;
-	//std::cout << "EWRodada2: " << EWRodada2 << std::endl;
-	//std::cout << "VWRodada: " << VWRodada << std::endl;
-	//std::cout << "VWRodada2: " << VWRodada2 << std::endl;
+	// std::cout << "---- FIM DA RODADA " << this->Indice << " ----" << std::endl;
+	// std::cout << "est coletadas: EWRodada,EWRodada2,VWRodada,VWRodada2" << std::endl;
+	// std::cout << "EWRodada: " << EWRodada << std::endl;
+	// std::cout << "EWRodada2: " << EWRodada2 << std::endl;
+	// std::cout << "VWRodada: " << VWRodada << std::endl;
+	// std::cout << "VWRodada2: " << VWRodada2 << std::endl;
 
     //arquivo.close();
     this->Fila->ResetaEstatisticasRodada();

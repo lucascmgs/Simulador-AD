@@ -1,16 +1,21 @@
 #include "Simulacao.hpp"
 
-Simulacao::Simulacao(int n, int k, int seed, double lambda) {
+Simulacao::Simulacao(int n, int k, int seed, double lambda, int politicaAtendimento) {
     this->n = n;
     this->k = k;
     this->Seed = seed;
     this->Lambda = lambda;
+	this->PoliticaAtendimento = politicaAtendimento;
 }
 
 void Simulacao::RodaSimulacao() {
     GeradorAleatorio::Inicializa(Seed);
 
-  	FilaMM1 fila = FilaMM1(TipoFila::FCFS, Lambda);
+	FilaMM1 fila = FilaMM1(TipoFila::FCFS, Lambda);
+	if (this->PoliticaAtendimento == 1) {
+		fila = FilaMM1(TipoFila::LCFS, Lambda);
+	}
+
 	//Inicializamos a fila adicionando um primeiro evento
 	fila.InicializaFila();
 
@@ -55,8 +60,9 @@ void Simulacao::AcumulaResultadosDaRodada(Rodada rod){
 
 
 void Simulacao::GeraEstatisticaSimulacao() {
-	std::cout << "PARÂMETROS UTILIZADOS" << std::endl;
-	std::cout << "n: " << n << ", k: " << k << ", lambda: " << Lambda << "\n" << std::endl;
+	std::cout << "---- FIM DA SIMULAÇÂO ----" << std::endl;
+	std::cout << "Parâmetros utilizados:" << std::endl;
+	std::cout << "n: " << n << ", k: " << k << ", lambda: " << Lambda << ", politica: " << this->PoliticaAtendimento << "\n" << std::endl;
     //Para W
 	EEW = this->EWRodadas/n;
 	VEW = this->EWRodadas2/(n-1) - pow(this->EWRodadas, 2)/(n*(n-1));
@@ -71,7 +77,8 @@ void Simulacao::GeraEstatisticaSimulacao() {
 
 	//Valores analíticos (desenvolvimento das contas está no relatório)
 	double EWAnalitico = Lambda/(1-Lambda); 
-	double VWAnalitico = (2*Lambda-(Lambda*Lambda))/((1-Lambda)*(1-Lambda));
+	double VWAnaliticoFCFS = (2*Lambda-(Lambda*Lambda))/((1-Lambda)*(1-Lambda));
+	double VWAnaliticoLCFS = (2*Lambda - pow(Lambda, 2) + pow(Lambda, 3))/(pow(1-Lambda, 3)); 
 	double ENqAnalitico = (Lambda*Lambda)/(1-Lambda);
 	double VNqAnalitico = (pow(Lambda, 2)+pow(Lambda, 3)-pow(Lambda, 4))/pow((1-Lambda), 2);
 
@@ -79,7 +86,7 @@ void Simulacao::GeraEstatisticaSimulacao() {
 	std::cout << "Valor Analítico para E[W]: " << EWAnalitico << std::endl;
 	std::cout << "E[W] estimado: " << EEW << std::endl;
 	std::cout << "V[E[W]]: " << VEW << std::endl;
-	std::cout << "Valor Analítico para V[W]: " << VWAnalitico << std::endl;
+	std::cout << "Valor Analítico para V[W]: " << (PoliticaAtendimento==0 ? VWAnaliticoFCFS : VWAnaliticoLCFS) << std::endl;
 	std::cout << "V[W] estimado: " << EVW << std::endl;
 	std::cout << "V[V[W]]: " << VVW << std::endl;
 
