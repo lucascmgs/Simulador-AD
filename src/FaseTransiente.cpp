@@ -61,6 +61,10 @@ void FaseTransiente::RodaFaseTransiente(){
             numeroPessoasAnterior = numeroPessoasAtual;
         }
     }
+
+	std::cout << "---- FIM DA FASE TRANSIENTE ----" << std::endl;
+	std::cout << "Coletas feitas: " << Fila->EstatisticasColetadasTempoEspera << "\n" << std::endl;
+
     //Resetamos as métricas para podermos iniciar a simulação de fato
     this->Fila->ResetaEstatisticasRodada();
 }

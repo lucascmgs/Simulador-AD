@@ -43,6 +43,7 @@ void Simulacao::AcumulaResultadosDaRodada(Rodada rod){
 	this->EWRodadas += rod.EWRodada;
 	this->EWRodadas2 += rod.EWRodada2;
 	this->VWRodadas += rod.VWRodada;
+	// std::cout << "rod.VWRodada: " << rod.VWRodada << std::endl;
 	this->VWRodadas2 += rod.VWRodada2;
 	
 	//Para Nq
@@ -70,7 +71,7 @@ void Simulacao::GeraEstatisticaSimulacao() {
 
 	//Valores analíticos (desenvolvimento das contas está no relatório)
 	double EWAnalitico = Lambda/(1-Lambda); 
-	double VWAnalitico = (2*Lambda-(Lambda*Lambda))/(1-(Lambda*Lambda));
+	double VWAnalitico = (2*Lambda-(Lambda*Lambda))/((1-Lambda)*(1-Lambda));
 	double ENqAnalitico = (Lambda*Lambda)/(1-Lambda);
 	double VNqAnalitico = (pow(Lambda, 2)+pow(Lambda, 3)-pow(Lambda, 4))/pow((1-Lambda), 2);
 
@@ -93,46 +94,48 @@ void Simulacao::GeraEstatisticaSimulacao() {
 
 void Simulacao::GeraIntervalosDeConfianca() {
     //Para E[W], t-student
-	Lower = EEW - t * sqrt(VEW)/sqrt(n*k);
-	Upper = EEW + t * sqrt(VEW)/sqrt(n*k);
+	Lower = EEW - t * sqrt(VEW)/sqrt(n);
+	Upper = EEW + t * sqrt(VEW)/sqrt(n);
 	double precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "\n---- IC E[W] (t-Student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << EEW << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
+	std::cout << "[" << Lower << ", " << EEW << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
 
 	//Para V(W), chi-quadrado
 	Lower = ((n-1)*EVW)/chiSuperior;
 	Upper = ((n-1)*EVW)/chiInferior;
 	precisao = (Upper-Lower)/(Upper+Lower);
-	std::cout << "---- IC V[W] (chi-quadrado) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << EVW << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
+	double centroChi = (Upper+Lower)/2;
+	std::cout << "---- IC V(W) (chi-quadrado) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << centroChi << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
 
     //Para V(W), t-student
-	Lower = EVW - t * sqrt(VVW)/sqrt(n*k);
-	Upper = EVW + t * sqrt(VVW)/sqrt(n*k);
+	Lower = EVW - t * sqrt(VVW)/sqrt(n);
+	Upper = EVW + t * sqrt(VVW)/sqrt(n);
 	precisao = (Upper-Lower)/(Upper+Lower);
-	std::cout << "---- IC V[W] (t-Student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << EVW << ", " << Upper << " |Precisão: "<< precisao <<"]\n" << std::endl;   
+	std::cout << "---- IC V(W) (t-Student) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << EVW << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;   
 
     //Para E[Nq] 
-	Lower = EENq - t*sqrt(VENq)/sqrt(n*k);
-	Upper = EENq + t*sqrt(VENq)/sqrt(n*k);
+	Lower = EENq - t*sqrt(VENq)/sqrt(n);
+	Upper = EENq + t*sqrt(VENq)/sqrt(n);
 	precisao = (Upper-Lower)/(Upper+Lower);
-	std::cout << "---- IC E(Nq) (t-Student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << EENq << ", " << Upper << " ] |Precisão: "<< precisao << "]\n" << std::endl;
+	std::cout << "---- IC E[Nq] (t-Student) ----" << std::endl;
+	std::cout << "[" << Lower << ", " << EENq << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
 
 	//Para V(Nq), chi-quadrado
 	Lower = ((n-1)*EVNq)/chiSuperior;
 	Upper = ((n-1)*EVNq)/chiInferior;
 	precisao = (Upper-Lower)/(Upper+Lower);
+	centroChi = (Upper+Lower)/2;
 	std::cout << "---- IC V(Nq) (chi-quadrado) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << EVNq << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;
+	std::cout << "[" << Lower << ", " << centroChi << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
 
     //Para V(Nq), t-student	
-	Lower = EVNq - t * sqrt(VVNq)/sqrt(n*k);
-	Upper = EVNq + t * sqrt(VVNq)/sqrt(n*k);
+	Lower = EVNq - t * sqrt(VVNq)/sqrt(n);
+	Upper = EVNq + t * sqrt(VVNq)/sqrt(n);
 	precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "---- IC V(Nq) (t-student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << EVNq << ", " << Upper << "] |Precisão: "<< precisao <<"]\n" << std::endl;   
+	std::cout << "[" << Lower << ", " << EVNq << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;   
 }
 
 void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
