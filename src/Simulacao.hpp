@@ -16,6 +16,9 @@
 
 class Simulacao {
     public:
+	//Vetor com referência para as rodadas da simulação
+	std::vector<Rodada> rodadas;
+
     //Inputs para a simulação
     //Número de rodadas de simulação
 	int n = 0;
@@ -31,41 +34,23 @@ class Simulacao {
     //Estatísticas da Simulação
 	//Para W
 	//Estimador da média do tempo de espera na fila (centro do IC da média de W)
-	double EEW = 0.0;
+	double Media_W = 0.0;
 	//Variância da média do tempo de espera na fila (sigma^2 do IC da média de W)
-	double VEW = 0.0;
+	double Variancia_Medias_W = 0.0;
 	//Estimador da variância do tempo de espera na fila (centro do IC da variãncia de W)
-	double EVW = 0.0;
+	double Variancia_W = 0.0;
 	//Variância da variância do tempo de espera na fila (sigma^2 do IC da variãncia de W)
-	double VVW = 0.0;
+	double Variancia_Variancias_W = 0.0;
 
 	//Para Nq
 	//Estimador da média do numero de pessoas na fila de espera (centro do IC da média de W)
-	double EENq = 0.0;
+	double Media_Nq = 0.0;
 	//Variância da média do numero de pessoas na fila de espera (sigma^2 do IC da média de W)
-	double VENq = 0.0;
+	double Variancia_Medias_Nq = 0.0;
 	//Estimador da variância do numero de pessoas na fila de espera (centro do IC da variãncia de W)
-	double EVNq = 0.0;
+	double Variancia_Nq = 0.0;
 	//Variância da variância do numero de pessoas na fila de espera (sigma^2 do IC da variãncia de W)
-	double VVNq = 0.0;
-
-    //Estatísticas das Rodadas
-	//Soma das média do tempo de espera na fila de uma rodada
-	double EWRodadas = 0.0;
-	//Soma dos quadrados das médias do tempo de espera na fila de uma rodada
-	double EWRodadas2 = 0.0;
-	//Soma das variâncias do tempo de espera na fila de uma rodada
-	double VWRodadas = 0.0;
-	//Soma dos quadrados das variâncias do tempo de espera na fila de uma rodada
-	double VWRodadas2 = 0.0;
-    //Soma das média do número de pessoas na fila de uma rodada
-	double ENqRodadas = 0.0;
-	//Soma dos quadrados das médias do número de pessoas na fila de uma rodada
-	double ENqRodadas2 = 0.0;
-	//Soma das variâncias do número de pessoas na fila de uma rodada
-	double VNqRodadas = 0.0;
-	//Soma dos quadrados das variâncias do número de pessoas na fila de uma rodada
-	double VNqRodadas2 = 0.0;
+	double Variancia_Variancias_Nq = 0.0;
 
 	//Variáveis referentes ao cálculo dos ICs
 	//Percentil da t-Student para confiança de 95% e número grande de graus de liberdade. Obtido em https://www.medcalc.org/manual/t-distribution.php
@@ -73,17 +58,12 @@ class Simulacao {
 	//Percentis da chi-Quadrado para confiança de 95% e 3200 - 1 = 3199 graus de liberdade. Obtido em https://keisan.casio.com/exec/system/1180573197
 	double chiInferior = 3044.130201771;
 	double chiSuperior = 3357.658239650;
-	//Limite inferior do IC
-	double Lower = 0.0;
-	//Limite superior do IC
-	double Upper = 0.0;
 
     Simulacao(int n, int k, int seed, double lambda, int politicaAtendimento);
     void RodaSimulacao();
     void GeraEstatisticaSimulacao();
     void GeraIntervalosDeConfianca();
 	void ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime);
-	void AcumulaResultadosDaRodada(Rodada rod);
 };
 
 

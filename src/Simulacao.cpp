@@ -33,47 +33,57 @@ void Simulacao::RodaSimulacao() {
 		rod.RealizaRodada();
 		//Coletamos os resultados da rodada e resetamos os valores das métricas na fila
 		rod.ColetaResultadosDaRodada();
-		//Acumulamos os resultados da rodada em nossa simulação
-		this->AcumulaResultadosDaRodada(rod);
-
+		//Guardamos uma referência para a rodada realizada para o cálculo dos estimadores
+		this->rodadas.push_back(rod);
 	}
 	//fim da simulação
-    GeraEstatisticaSimulacao();
+	GeraEstatisticaSimulacao();
     GeraIntervalosDeConfianca();
 	ColetaEstatisticasDaSimulacao(fila, tempoDaSimulacao);
 }
-
-void Simulacao::AcumulaResultadosDaRodada(Rodada rod){
-	//Para W
-	this->EWRodadas += rod.EWRodada;
-	this->EWRodadas2 += rod.EWRodada2;
-	this->VWRodadas += rod.VWRodada;
-	// std::cout << "rod.VWRodada: " << rod.VWRodada << std::endl;
-	this->VWRodadas2 += rod.VWRodada2;
-	
-	//Para Nq
-	this->ENqRodadas += rod.ENqRodada;
-	this->ENqRodadas2 += rod.ENqRodada2;
-	this->VNqRodadas += rod.VNqRodada;
-	this->VNqRodadas2 += rod.VNqRodada2;
-}
-
 
 void Simulacao::GeraEstatisticaSimulacao() {
 	std::cout << "---- FIM DA SIMULAÇÂO ----" << std::endl;
 	std::cout << "Parâmetros utilizados:" << std::endl;
 	std::cout << "n: " << n << ", k: " << k << ", lambda: " << Lambda << ", politica: " << this->PoliticaAtendimento << "\n" << std::endl;
-    //Para W
-	EEW = this->EWRodadas/n;
-	VEW = this->EWRodadas2/(n-1) - pow(this->EWRodadas, 2)/(n*(n-1));
-	EVW = this->VWRodadas/n;
-	VVW = this->VWRodadas2/(n-1) - pow(this->VWRodadas, 2)/(n*(n-1));
 
-	//Para Nq
-	EENq = this->ENqRodadas/n;
-	VENq = this->ENqRodadas2/(n-1) - pow(this->ENqRodadas, 2)/(n*(n-1));
-	EVNq = this->VNqRodadas/n;
-	VVNq = this->VNqRodadas2/(n-1) - pow(this->VNqRodadas, 2)/(n*(n-1));
+	Media_W = 0;
+	Media_Nq = 0;
+	Variancia_W = 0;
+	Variancia_Nq = 0;
+	for (unsigned int i = 0; i < rodadas.size(); i++) {
+		Media_W += rodadas[i].EWRodada;
+		Media_Nq += rodadas[i].ENqRodada;
+		Variancia_W += rodadas[i].VWRodada;
+		Variancia_Nq += rodadas[i].VNqRodada;
+	}
+	Media_W /= n;
+	Media_Nq /= n;
+	Variancia_W /= n;
+	Variancia_Nq /= n;
+	std::cout << "* Média W: " << Media_W << std::endl;
+	std::cout << "* Média Nq: " << Media_Nq << std::endl;
+	std::cout << "* Variância W: " << Variancia_W << std::endl;
+	std::cout << "* Variância Nq: " << Variancia_Nq << std::endl;
+
+	Variancia_Medias_W = 0;
+	Variancia_Medias_Nq = 0;
+	Variancia_Variancias_W = 0;
+	Variancia_Variancias_Nq = 0;
+	for (unsigned int i = 0; i < rodadas.size(); i++) {
+		Variancia_Medias_W += pow(rodadas[i].EWRodada - Media_W, 2);
+		Variancia_Medias_Nq += pow(rodadas[i].ENqRodada - Media_Nq, 2);
+		Variancia_Variancias_W += pow(rodadas[i].VWRodada - Variancia_W, 2);
+		Variancia_Variancias_Nq += pow(rodadas[i].VNqRodada - Variancia_Nq, 2);
+	}
+	Variancia_Medias_W /= (n-1);
+	Variancia_Medias_Nq /= (n-1);
+	Variancia_Variancias_W /= (n-1);
+	Variancia_Variancias_Nq /= (n-1);
+	std::cout << "* Variância das Médias de W: " << Variancia_Medias_W << std::endl;
+	std::cout << "* Variância das Médias de Nq: " << Variancia_Medias_Nq << std::endl;
+	std::cout << "* Variância das Variâncias de W: " << Variancia_Variancias_W << std::endl;
+	std::cout << "* Variância das Variâncias de Nq: " << Variancia_Variancias_Nq << std::endl;
 
 	//Valores analíticos (desenvolvimento das contas está no relatório)
 	double EWAnalitico = Lambda/(1-Lambda); 
@@ -81,68 +91,56 @@ void Simulacao::GeraEstatisticaSimulacao() {
 	double VWAnaliticoLCFS = (2*Lambda - pow(Lambda, 2) + pow(Lambda, 3))/(pow(1-Lambda, 3)); 
 	double ENqAnalitico = (Lambda*Lambda)/(1-Lambda);
 	double VNqAnalitico = (pow(Lambda, 2)+pow(Lambda, 3)-pow(Lambda, 4))/pow((1-Lambda), 2);
-
-	std::cout << "---- W ----" << std::endl;
-	std::cout << "Valor Analítico para E[W]: " << EWAnalitico << std::endl;
-	std::cout << "E[W] estimado: " << EEW << std::endl;
-	std::cout << "V[E[W]]: " << VEW << std::endl;
-	std::cout << "Valor Analítico para V[W]: " << (PoliticaAtendimento==0 ? VWAnaliticoFCFS : VWAnaliticoLCFS) << std::endl;
-	std::cout << "V[W] estimado: " << EVW << std::endl;
-	std::cout << "V[V[W]]: " << VVW << std::endl;
-
-	std::cout << "\n---- Nq ----" << std::endl;
-	std::cout << "Valor Analítico para E[Nq]: " << ENqAnalitico << std::endl;
-	std::cout << "E[Nq] estimado: " << EENq << std::endl;
-	std::cout << "V[E[Nq]]: " << VENq << std::endl;
-	std::cout << "Valor Analítico para V[Nq]: " << VNqAnalitico << std::endl;
-	std::cout << "V[Nq] estimado: " << EVNq << std::endl;
-	std::cout << "V[V[Nq]]: " << VVNq << std::endl;
+	std::cout << "* Valor Analítico para E[W]: " << EWAnalitico << std::endl;
+	std::cout << "* Valor Analítico para V[W]: " << (PoliticaAtendimento==0 ? VWAnaliticoFCFS : VWAnaliticoLCFS) << std::endl;
+	std::cout << "* Valor Analítico para E[Nq]: " << ENqAnalitico << std::endl;
+	std::cout << "* Valor Analítico para V[Nq]: " << VNqAnalitico << std::endl;
 }
 
 void Simulacao::GeraIntervalosDeConfianca() {
     //Para E[W], t-student
-	Lower = EEW - t * sqrt(VEW)/sqrt(n);
-	Upper = EEW + t * sqrt(VEW)/sqrt(n);
+	double Lower = Media_W - t * sqrt(Variancia_Medias_W)/sqrt(n);
+	double Upper = Media_W + t * sqrt(Variancia_Medias_W)/sqrt(n);
 	double precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "\n---- IC E[W] (t-Student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << EEW << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
+	std::cout << "[" << Lower << ", " << Media_W << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
 
 	//Para V(W), chi-quadrado
-	Lower = ((n-1)*EVW)/chiSuperior;
-	Upper = ((n-1)*EVW)/chiInferior;
+	Lower = ((n-1)*Variancia_W)/chiSuperior;
+	Upper = ((n-1)*Variancia_W)/chiInferior;
 	precisao = (Upper-Lower)/(Upper+Lower);
 	double centroChi = (Upper+Lower)/2;
 	std::cout << "---- IC V(W) (chi-quadrado) ----" << std::endl;
 	std::cout << "[" << Lower << ", " << centroChi << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
 
     //Para V(W), t-student
-	Lower = EVW - t * sqrt(VVW)/sqrt(n);
-	Upper = EVW + t * sqrt(VVW)/sqrt(n);
+	Lower = Variancia_W - t * sqrt(Variancia_Variancias_W)/sqrt(n);
+	Upper = Variancia_W + t * sqrt(Variancia_Variancias_W)/sqrt(n);
 	precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "---- IC V(W) (t-Student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << EVW << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;   
+	std::cout << "[" << Lower << ", " << Variancia_W << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;   
 
     //Para E[Nq] 
-	Lower = EENq - t*sqrt(VENq)/sqrt(n);
-	Upper = EENq + t*sqrt(VENq)/sqrt(n);
+	Lower = Media_Nq - t*sqrt(Variancia_Medias_Nq)/sqrt(n);
+	Upper = Media_Nq + t*sqrt(Variancia_Medias_Nq)/sqrt(n);
 	precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "---- IC E[Nq] (t-Student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << EENq << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
+	std::cout << "[" << Lower << ", " << Media_Nq << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
 
 	//Para V(Nq), chi-quadrado
-	Lower = ((n-1)*EVNq)/chiSuperior;
-	Upper = ((n-1)*EVNq)/chiInferior;
+	Lower = ((n-1)*Variancia_Nq)/chiSuperior;
+	Upper = ((n-1)*Variancia_Nq)/chiInferior;
 	precisao = (Upper-Lower)/(Upper+Lower);
 	centroChi = (Upper+Lower)/2;
 	std::cout << "---- IC V(Nq) (chi-quadrado) ----" << std::endl;
 	std::cout << "[" << Lower << ", " << centroChi << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
 
     //Para V(Nq), t-student	
-	Lower = EVNq - t * sqrt(VVNq)/sqrt(n);
-	Upper = EVNq + t * sqrt(VVNq)/sqrt(n);
+	Lower = Variancia_Nq - t * sqrt(Variancia_Variancias_Nq)/sqrt(n);
+	Upper = Variancia_Nq + t * sqrt(Variancia_Variancias_Nq)/sqrt(n);
 	precisao = (Upper-Lower)/(Upper+Lower);
 	std::cout << "---- IC V(Nq) (t-student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << EVNq << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;   
+	std::cout << "[" << Lower << ", " << Variancia_Nq << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;   
 }
 
 void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
@@ -168,9 +166,9 @@ void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 
 	std::vector<double> valores (9);
 	/*TIMESTAMP*/						valores.at(0) = timestamp; 	
-	/*UTILIZACAO*/						valores.at(1) = (Upper-Lower)/(Upper+Lower); 	
-	/*ICMediaTempoEspera*/				valores.at(3) = EEW; 	
-	/*tstudentICVarianciaTempoEspera*/	valores.at(4) = VEW;
+	/*UTILIZACAO*/						valores.at(1) = Lambda; 	
+	/*ICMediaTempoEspera*/				valores.at(3) = Media_W; 	
+	/*tstudentICVarianciaTempoEspera*/	valores.at(4) = Variancia_W;
 	/*chisquareICVarianciaTempoEspera*/	valores.at(5) = 0; 	
 	/*ICMediaPessoas*/					valores.at(6) = 0; 								
 	/*tstudentICVarianciaPessoas*/		valores.at(7) = 0; 					
