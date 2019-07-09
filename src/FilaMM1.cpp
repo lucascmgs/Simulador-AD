@@ -57,6 +57,7 @@ void FilaMM1::TrataProximoEvento(){
             break;
         }
     }
+    ReportaStatus();
 }
 
 //Caso seja necessário checar se a fila já está inicializada
@@ -79,14 +80,14 @@ void FilaMM1::GeraProximaChegada(){
     //Geramos o intervalo da próxima chegada com a taxa de chegada e o acrescentamos ao tempo atual para obtermos o tempo da próxima chegada.
 	double tempoProximaChegada = GeradorAleatorio::Exponencial(this->Utilizacao) + this->TempoAtual;
     //Adicionamos à heap de eventos um novo evento de chegada acontecendo no tempo obtido.
-	this->Eventos.push(Evento(TipoEvento::CHEGADA, tempoProximaChegada));
+	this->Eventos.push(Evento(TipoEvento::CHEGADA, (1/this->Utilizacao) ));
 }
 
 //Gera o próximo evento de saída
 void FilaMM1::GeraProximaSaida(){
     //Calcula de forma análoga à chegada o tempo da próxima saída, com taxa igual a 1 e acrescentamos um novo evento de saída à heap
 	double tempoProximaSaida = GeradorAleatorio::Exponencial(1.0) + this->TempoAtual;
-	this->Eventos.push(Evento(TipoEvento::SAIDA, tempoProximaSaida));
+	this->Eventos.push(Evento(TipoEvento::SAIDA, 1.0));
 }
 
 //Imprime informações sobre o estado da fila (apenas pra efeitos de debug, depois será removido)

@@ -34,6 +34,7 @@ void Simulacao::RodaSimulacao() {
 	}
 	//fim da simulação
 	std::cout << "---- FIM DA SIMULACAO " << " ----" << std::endl;
+	std::cout << "PARAMETROS DA SIMULAÇÃO: n = " << this->n << "; k = " << this->k << "; LAMBDA = " << this->Lambda << std::endl;
     GeraEstatisticaSimulacao();
     GeraIntervaloDeConfianca();
 	ColetaEstatisticasDaSimulacao(fila, tempoDaSimulacao);
