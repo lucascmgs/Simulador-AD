@@ -18,6 +18,7 @@ class Rodada{
 
 	FilaMM1* Fila;
     //Estatísticas da Rodada
+	
 	//Soma das média do tempo de espera na fila da rodada
 	double EWRodada = 0.0;
 	//Soma dos quadrados das médias do tempo de espera na fila da rodada

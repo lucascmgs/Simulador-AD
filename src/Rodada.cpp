@@ -5,11 +5,9 @@ using namespace std;
 
 //Construtor
 Rodada::Rodada(int indiceRodada, int tamanhoRodada, FilaMM1 *fila){ 
-    //Escritor esc = Escritor();
     this->Indice = indiceRodada;
     this->Tamanho = tamanhoRodada;
     this->Fila = fila;
-    //esc.CriaCSV();
 }
 
 
