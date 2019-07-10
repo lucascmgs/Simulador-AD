@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 				k = atoi(argv[i + 1]);
 			}
             if (strcmp(argv[i], "-seed") == 0) {
-				lambda = atoi(argv[i + 1]);
+				seed = atoi(argv[i + 1]);
 			}
 			if (strcmp(argv[i], "-lambda") == 0) {
 				lambda = atof(argv[i + 1]);
