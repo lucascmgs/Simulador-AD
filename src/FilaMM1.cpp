@@ -106,11 +106,14 @@ void FilaMM1::GeraEstatisticaNumeroDePessoasNaFila(double novoTempo){
 
 //Gera estatísticas relevantes ao tempo de espera em fila do freguês
 void FilaMM1::GeraEstatisticaTempoEsperaNaFila(Fregues fregues){
-    //std::cout<<fregues << std::endl;
     this->EstatisticasColetadasTempoEspera++;
     double tempoDeEsperaDoFregues = fregues.TempoDeEntradaEmServico - fregues.TempoChegada;
     this->temposNaFilaDeEspera += tempoDeEsperaDoFregues;
-    this->quadradosDosTemposDeEsperaNaFila += pow(tempoDeEsperaDoFregues, 2);
+    this->quadradosDosTemposDeEsperaNaFila += (tempoDeEsperaDoFregues*tempoDeEsperaDoFregues);
+    // std::cout << "tempoDeEsperaDoFregues: " << tempoDeEsperaDoFregues << std::endl;
+    // std::cout << "temposNaFilaDeEspera: " << temposNaFilaDeEspera << std::endl;
+    // std::cout << "quadradoDoTempoDeEsperaNaFila: " << tempoDeEsperaDoFregues*tempoDeEsperaDoFregues << std::endl;
+    // std::cout << "quadradosDosTemposDeEsperaNaFila: " << quadradosDosTemposDeEsperaNaFila << std::endl;
 
     this->temposDeAtendimento += (fregues.TempoSaida - fregues.TempoDeEntradaEmServico);
     this->temposDeEsperaTotal += (fregues.TempoSaida - fregues.TempoChegada);
@@ -147,8 +150,7 @@ double FilaMM1::TempoMedioDeEsperaTotal(){
 
 //Cálculo do estimador da variância do tempo de espera na fila de uma rodada (VWi)
 double FilaMM1::EstimadorVarianciaDoTempoNaFilaDeEspera(){
-    int n = this->EstatisticasColetadasTempoEspera;
-    return this->quadradosDosTemposDeEsperaNaFila/(n-1) - pow(this->temposNaFilaDeEspera, 2)/(n*(n-1));
+    return (this->quadradosDosTemposDeEsperaNaFila - this->temposNaFilaDeEspera * this->temposNaFilaDeEspera / this->EstatisticasColetadasTempoEspera) / (this->EstatisticasColetadasTempoEspera - 1);
 }
 
 //Reseta variaveis que acumulam o tempo de espera e o número de pessoas ao fim de uma rodada
@@ -161,8 +163,7 @@ void FilaMM1::ResetaEstatisticasRodada(){
     this->tempoOcupado = 0.0;
     this->EstatisticasColetadasTempoEspera = 0;
 
-    //TODO: Para Nq
-
+    //Para Nq
     this->numeroDePessoasNaFilaVezesTempo = 0.0;
     this->quadradosDoNumeroDePessoasNaFilaVezesTempo = 0.0;
 

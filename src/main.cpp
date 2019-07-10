@@ -15,6 +15,8 @@ int main(int argc, char* argv[])
 	int seed = time(NULL);
 	//Valor default para a utilização/taxa de chegada (rho = lambda*E[X], mas como E[X] = 1, então rho = lambda)
     double lambda = 0.2;
+	//Valor default para a política de atendimento (0 para FCFS, 1 para LCFS)
+    int politicaAtendimento = 0;
 
     //Permite testar o simulador com diferentes parâmetros
 	for (int i = 1; i < argc; i++) {
@@ -26,13 +28,20 @@ int main(int argc, char* argv[])
 				k = atoi(argv[i + 1]);
 			}
             if (strcmp(argv[i], "-seed") == 0) {
-				lambda = atoi(argv[i + 1]);
+				seed = atoi(argv[i + 1]);
 			}
 			if (strcmp(argv[i], "-lambda") == 0) {
 				lambda = atof(argv[i + 1]);
 			}
+			if (strcmp(argv[i], "-politica") == 0) {
+				politicaAtendimento = atof(argv[i + 1]);
+				if (politicaAtendimento != 0 && politicaAtendimento != 1) {
+					std::cout << "Parâmetro política de atendimento passado incorretamente! Use 0 para FCFS ou 1 para LCFS." << std::endl;
+					abort();
+				}
+			}
 		}
 	}
-	Simulacao sim = Simulacao(n, k, seed, lambda);
+	Simulacao sim = Simulacao(n, k, seed, lambda, politicaAtendimento);
 	sim.RodaSimulacao();
 }
