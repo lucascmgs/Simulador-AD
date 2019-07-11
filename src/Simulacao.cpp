@@ -9,8 +9,10 @@ Simulacao::Simulacao(int n, int k, int seed, double lambda, int politicaAtendime
 }
 
 void Simulacao::RodaSimulacao() {
+	//inicializa o gerador aleatório a partir da semente, seja default ou passada por parâmetro
     GeradorAleatorio::Inicializa(Seed);
 
+	//cria a fila de acordo com o parâmetro de política. É discutível se funciona.
 	FilaMM1 fila = FilaMM1(TipoFila::FCFS, Lambda);
 	if (this->PoliticaAtendimento == 1) {
 		fila = FilaMM1(TipoFila::LCFS, Lambda);
@@ -19,9 +21,11 @@ void Simulacao::RodaSimulacao() {
 	//Inicializamos a fila adicionando um primeiro evento
 	fila.InicializaFila();
 
+	//Roda fase transiente, independente do gerador aleatório
 	FaseTransiente trans = FaseTransiente(&fila);
 	trans.RodaFaseTransiente();
 
+	//Coleta o tempo de clock no qual a simulação sai da fase transiente e começa a rodar as rodadas
 	time_t tempoAtual = time(0);
 	tm * tempoDaSimulacao = localtime(&tempoAtual);
 
@@ -37,6 +41,7 @@ void Simulacao::RodaSimulacao() {
 		this->rodadas.push_back(rod);
 	}
 	//fim da simulação
+	//gera output visual com as métricas coletadas
 	GeraEstatisticaSimulacao();
     GeraIntervalosDeConfianca();
 	ColetaEstatisticasDaSimulacao(fila, tempoDaSimulacao);
@@ -143,35 +148,39 @@ void Simulacao::GeraIntervalosDeConfianca() {
 	std::cout << "[" << Lower << ", " << Variancia_Nq << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;   
 }
 
+//Escreve as métricas de uma simulação em um arquivo .csv para futuro tratamento dos dados coletados
 void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
+	//Instancia um escritor, que escreve no arquivo de saída. Nome e cabeçalho definidos por strings internas à função.
 	Escritor esc = Escritor();
 	std::string nomeDoArquivo = "default";
 	std::string cabecalhoDoArquivo = "kmin,rho,politica,lower,V(W),upper,precision,lower,centrochi_W,upper,precision";
 	fstream file = esc.CriaCSV(nomeDoArquivo,cabecalhoDoArquivo);
 	
-	string hour;
+	/*string hour;
 	string minute = to_string(simTime->tm_min); if(minute.size()<2) minute="0"+minute;
 	string second = to_string(simTime->tm_sec); if(second.size()<2) second="0"+second;
 	hour = to_string(simTime->tm_hour - 3); if(hour.size()<2) hour="0"+hour;
 	hour.append(minute);
 	hour.append(second);
 	const char* conversao = hour.c_str();
-	double timestamp = atof(conversao);
+	double timestamp = atof(conversao);*/
 
-
+	//Vetor de métricas coletadas em uma simulação com posições correspondentes aos títulos da primeira linha
 	std::vector<double> valores (11);
-	/*pelo*/							valores.at(0) = timestamp; 	
-	/*amor*/							valores.at(1) = Lambda; 	
-	/*de*/								valores.at(3) = Media_W; 	
-	/*D's*/								valores.at(4) = Variancia_W;
-	/*mudem comentários*/				valores.at(5) = 0; 	
-	/*conforme*/						valores.at(6) = 0; 								
-	/*mudarem*/							valores.at(7) = 0; 					
-	/*as*/								valores.at(8) = 0;				
-	/*métricas*/						valores.at(9) = 0;				
-	/*coletadas*/						valores.at(10) = 0;
-	/*a fim de tornar o código o mais legível possível por favor*/
-	/*POLITICA*/switch(fila.Tipo){
+	//Carrega o vetor, posição a posição, com as métricas desejadas.
+	/*kmin*/									valores.at(0) = k; 	
+	/*valor de rho*/							valores.at(1) = Lambda; 	
+	/*lower IC pela T-Student*/					valores.at(3) = Media_W; 	
+	/*Variância do tempo de espera na fila*/	valores.at(4) = Variancia_W;
+	/*Upper IC com T-Student*/					valores.at(5) = 0; 	
+	/*Precisão do IC com T-Student*/			valores.at(6) = 0; 								
+	/*lower IC pela Chi-Square*/				valores.at(7) = 0; 					
+	/*Variância estimada pela Chi-Square*/		valores.at(8) = 0;				
+	/*upper IC com Chi-Square*/					valores.at(9) = 0;				
+	/*Precisão do IC com Chi-Square*/			valores.at(10) = 0;
+	
+	//Política em vigor na simulação
+	switch(fila.Tipo){
 		case TipoFila::FCFS:
 			valores.at(2) = 0;
 			break;
@@ -183,5 +192,5 @@ void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 			break;
 	}
 
-	esc.EscreveLinhaEmCSV(9, valores);	   
+	file = esc.EscreveLinhaEmCSV(nomeDoArquivo, 11, valores);	   
 }

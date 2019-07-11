@@ -9,7 +9,7 @@ class Escritor{
     public:
     Escritor(void);
     std::fstream CriaCSV(string nomeDoArquivo, string cabecalho);
-    std::fstream EscreveLinhaEmCSV(int numeroDeMetricas, std::vector<double> entradas);
-    std::fstream EscreveCabecalhoEmCSV(int numeroDeMetricas, std::vector<std::string> entradas);
+    std::fstream EscreveLinhaEmCSV(string nomeDoArquivo, int numeroDeMetricas, std::vector<double> entradas);
+    std::fstream EscreveCabecalhoEmCSV(string nomeDoArquivo, string entradas);
 };
 #endif

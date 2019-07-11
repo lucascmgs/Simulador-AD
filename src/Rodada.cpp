@@ -4,6 +4,7 @@
 using namespace std;
 
 //Construtor
+//Originalmente cada rodada teria um escritor para registrar em arquivo os dados de cada rodada, mas por motivos de otimização do simulador nós não seguimos com a ideia
 Rodada::Rodada(int indiceRodada, int tamanhoRodada, FilaMM1 *fila){ 
     //Escritor esc = Escritor();
     this->Indice = indiceRodada;

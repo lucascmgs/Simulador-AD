@@ -3,7 +3,7 @@
 #include<fstream>
 using namespace std;
 
-//eu não sei se precisa de fato de um construtor, mas aqui está.
+//Construtor do Escritor, essencial para manipular .csv.
 Escritor::Escritor(void){ }
 
 //Esta função é a responsável por "criar" o .csv em questão. 
@@ -13,40 +13,40 @@ Escritor::Escritor(void){ }
 std::fstream Escritor::CriaCSV(std::string nomeDoArquivo, std::string cabecalho){
     std::fstream arquivo;
     std::string realNomeDoArquivo = nomeDoArquivo + ".csv";
-    arquivo.open(nomeDoArquivo.c_str(), ios::out | ios::app | ios::binary);
-    std::cout << "sim" << "\n";
-    arquivo << cabecalho;
-    arquivo << "\n";
+    arquivo.open(realNomeDoArquivo.c_str(), ios::out | ios::app | ios::binary);
+    //se o arquivo de nome indicado já existir no diretório do programa, o cabeçalho não será reescrito. Bom para coletar métricas de diferentes simulações.
+    if(arquivo.tellg() == 0){
+        arquivo << cabecalho;
+        arquivo << "\n";
+    }
     return arquivo;
 }
 
-//Esta função imprime um vetor de entradas por linha, que no caso são as métricas coletadas em uma rodada.
-std::fstream Escritor::EscreveLinhaEmCSV(int numeroDeMetricas, std::vector<double> entradas){
+//Esta função imprime um vetor de entradas por linha, que no caso do simulador são as métricas coletadas em uma simulação.
+std::fstream Escritor::EscreveLinhaEmCSV(std::string nomeDoArquivo, int numeroDeMetricas, std::vector<double> metricas){
     std::fstream arquivo;
-    arquivo.open("results.csv", ios::out | ios::app | ios::binary);
+    std::string realNomeDoArquivo = nomeDoArquivo + ".csv";
+    arquivo.open(realNomeDoArquivo.c_str(), ios::out | ios::app | ios::binary);
+    //Escreve os parâmetros contidos no vetor de metricas, separando-os por vírgula
     for(int j = 0; j < numeroDeMetricas; j++){
         if(j == numeroDeMetricas-1){
-            arquivo << entradas.at(j);
+            arquivo << metricas.at(j);
             break;
         }
-        arquivo << entradas.at(j);
+        arquivo << metricas.at(j);
         arquivo << ",";
     }
     arquivo << "\n";
     return arquivo;
 }
 
-std::fstream Escritor::EscreveCabecalhoEmCSV(int numeroDeMetricas, std::vector<std::string> entradas){
+//Esta função imprime uma string em uma linha do programa. Originalmente pretendido para criar um outro cabeçalho, mas caiu em desuso rapidamente.
+//Ainda pode escrever uma linha de string no csv, mas cabe a quem for passar a string usar vírgulas para dividir elementos entre células, caso assim o queira
+std::fstream Escritor::EscreveCabecalhoEmCSV(std::string nomeDoArquivo, string entradas){
     std::fstream arquivo;
-    arquivo.open("results.csv", ios::out | ios::app | ios::binary);
-    for(int j = 0; j < numeroDeMetricas; j++){
-        if(j == numeroDeMetricas-1){
-            arquivo << entradas.at(j);
-            break;
-        }
-        arquivo << entradas.at(j);
-        arquivo << ",";
-    }
+    std::string realNomeDoArquivo = nomeDoArquivo + ".csv";
+    arquivo.open(realNomeDoArquivo.c_str(), ios::out | ios::app | ios::binary);
+    arquivo << entradas;
     arquivo << "\n";
     return arquivo;
 }
