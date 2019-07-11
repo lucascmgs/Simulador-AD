@@ -63,7 +63,7 @@ void FaseTransiente::RodaFaseTransiente(){
     }
 
 	std::cout << "---- FIM DA FASE TRANSIENTE ----" << std::endl;
-	std::cout << "Tamanho da fase transiente: " << Fila->EstatisticasColetadasTempoEspera << " coletas\n" << std::endl;
+	std::cout << "Tamanho da fase transiente: " << Fila->EstatisticasColetadasTempoEspera << " eventos tratados\n" << std::endl;
 
     //Resetamos as métricas para podermos iniciar a simulação de fato
     this->Fila->ResetaEstatisticasRodada();
