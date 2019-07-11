@@ -145,15 +145,10 @@ void Simulacao::GeraIntervalosDeConfianca() {
 
 void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 	Escritor esc = Escritor();
-	fstream file;
-	file.open("results.csv");
-	if(file.fail()){
-		std::vector<string> linha (1);
-		linha.at(0) = "Timestamp,Precisão,Politica,ICMediaTempoEspera,ICVarianciaTempoEspera(t-student),ICVarianciaTempoEspera(chi-square),ICMediaPessoas,ICVarianciaPessoas(t-student),ICVarianciaPessoas(chi-square)";
-		esc.EscreveCabecalhoEmCSV(1, linha);	
-	}
-	file.close();
-
+	std::string nomeDoArquivo = "default";
+	std::string cabecalhoDoArquivo = "kmin,rho,politica,lower,V(W),upper,precision,lower,centrochi_W,upper,precision";
+	fstream file = esc.CriaCSV(nomeDoArquivo,cabecalhoDoArquivo);
+	
 	string hour;
 	string minute = to_string(simTime->tm_min); if(minute.size()<2) minute="0"+minute;
 	string second = to_string(simTime->tm_sec); if(second.size()<2) second="0"+second;
@@ -164,7 +159,7 @@ void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 	double timestamp = atof(conversao);
 
 
-	std::vector<double> valores (9);
+	std::vector<double> valores (11);
 	/*TIMESTAMP*/						valores.at(0) = timestamp; 	
 	/*UTILIZACAO*/						valores.at(1) = Lambda; 	
 	/*ICMediaTempoEspera*/				valores.at(3) = Media_W; 	
@@ -172,7 +167,9 @@ void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 	/*chisquareICVarianciaTempoEspera*/	valores.at(5) = 0; 	
 	/*ICMediaPessoas*/					valores.at(6) = 0; 								
 	/*tstudentICVarianciaPessoas*/		valores.at(7) = 0; 					
-	/*chisquareICVarianciaPessoas*/		valores.at(8) = 0;
+	/*chisquareICVarianciaPessoas*/		valores.at(8) = 0;				
+	/*chisquareICVarianciaPessoas*/		valores.at(9) = 0;				
+	/*chisquareICVarianciaPessoas*/		valores.at(10) = 0;
 
 	/*POLITICA*/switch(fila.Tipo){
 		case TipoFila::FCFS:
