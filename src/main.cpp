@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 	//Valor default para a semente (utiliza o horário atual do sistema)
 	int seed = time(NULL);
 	//Valor default para a utilização/taxa de chegada (rho = lambda*E[X], mas como E[X] = 1, então rho = lambda)
-    double lambda = 0.2;
+    double rho = 0.2;
 	//Valor default para a política de atendimento (0 para FCFS, 1 para LCFS)
     int politicaAtendimento = 0;
 
@@ -30,8 +30,8 @@ int main(int argc, char* argv[])
             if (strcmp(argv[i], "-seed") == 0) {
 				seed = atoi(argv[i + 1]);
 			}
-			if (strcmp(argv[i], "-lambda") == 0) {
-				lambda = atof(argv[i + 1]);
+			if (strcmp(argv[i], "-rho") == 0) {
+				rho = atof(argv[i + 1]);
 			}
 			if (strcmp(argv[i], "-politica") == 0) {
 				politicaAtendimento = atof(argv[i + 1]);
@@ -42,6 +42,6 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-	Simulacao sim = Simulacao(n, k, seed, lambda, politicaAtendimento);
+	Simulacao sim = Simulacao(n, k, seed, rho, politicaAtendimento);
 	sim.RodaSimulacao();
 }

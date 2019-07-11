@@ -45,7 +45,7 @@ void Simulacao::RodaSimulacao() {
 void Simulacao::GeraEstatisticaSimulacao() {
 	std::cout << "---- FIM DA SIMULAÇÂO ----" << std::endl;
 	std::cout << "Parâmetros utilizados:" << std::endl;
-	std::cout << "n: " << n << ", k: " << k << ", lambda: " << Lambda << ", politica: " << this->PoliticaAtendimento << "\n" << std::endl;
+	std::cout << "n: " << n << ", k: " << k << ", lambda/rho: " << Lambda << ", politica: " << this->PoliticaAtendimento << "\n" << std::endl;
 
 	Media_W = 0;
 	Media_Nq = 0;
