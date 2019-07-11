@@ -17,6 +17,8 @@ int main(int argc, char* argv[])
     double rho = 0.2;
 	//Valor default para a política de atendimento (0 para FCFS, 1 para LCFS)
     int politicaAtendimento = 0;
+	//Valor default para a o nome do arquivo de saída
+    std::string output = "results";
 
     //Permite testar o simulador com diferentes parâmetros
 	for (int i = 1; i < argc; i++) {
@@ -39,9 +41,12 @@ int main(int argc, char* argv[])
 					std::cout << "Parâmetro política de atendimento passado incorretamente! Use 0 para FCFS ou 1 para LCFS." << std::endl;
 					abort();
 				}
+			} 
+			if (strcmp(argv[i], "-output") == 0) {
+				output = argv[i + 1];
 			}
 		}
 	}
-	Simulacao sim = Simulacao(n, k, seed, rho, politicaAtendimento);
+	Simulacao sim = Simulacao(n, k, seed, rho, politicaAtendimento, output);
 	sim.RodaSimulacao();
 }
