@@ -160,17 +160,17 @@ void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 
 
 	std::vector<double> valores (11);
-	/*TIMESTAMP*/						valores.at(0) = timestamp; 	
-	/*UTILIZACAO*/						valores.at(1) = Lambda; 	
-	/*ICMediaTempoEspera*/				valores.at(3) = Media_W; 	
-	/*tstudentICVarianciaTempoEspera*/	valores.at(4) = Variancia_W;
-	/*chisquareICVarianciaTempoEspera*/	valores.at(5) = 0; 	
-	/*ICMediaPessoas*/					valores.at(6) = 0; 								
-	/*tstudentICVarianciaPessoas*/		valores.at(7) = 0; 					
-	/*chisquareICVarianciaPessoas*/		valores.at(8) = 0;				
-	/*chisquareICVarianciaPessoas*/		valores.at(9) = 0;				
-	/*chisquareICVarianciaPessoas*/		valores.at(10) = 0;
-
+	/*pelo*/							valores.at(0) = timestamp; 	
+	/*amor*/							valores.at(1) = Lambda; 	
+	/*de*/								valores.at(3) = Media_W; 	
+	/*D's*/								valores.at(4) = Variancia_W;
+	/*mudem comentários*/				valores.at(5) = 0; 	
+	/*conforme*/						valores.at(6) = 0; 								
+	/*mudarem*/							valores.at(7) = 0; 					
+	/*as*/								valores.at(8) = 0;				
+	/*métricas*/						valores.at(9) = 0;				
+	/*coletadas*/						valores.at(10) = 0;
+	/*a fim de tornar o código o mais legível possível por favor*/
 	/*POLITICA*/switch(fila.Tipo){
 		case TipoFila::FCFS:
 			valores.at(2) = 0;
