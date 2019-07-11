@@ -23,7 +23,7 @@ class FilaMM1{
     int EstatisticasColetadasTempoEspera = 0;
 
     //Fregues que está atualmente em serviço
-    Fregues freguesEmServico = Fregues(-1);
+    Fregues freguesEmServico = Fregues(-1, -1);
     //Lista de fregueses presentes na fila de espera
     std::list<Fregues> FreguesesNaFilaDeEspera;
     //Heap de eventos que ocorrem na fila
@@ -31,7 +31,7 @@ class FilaMM1{
 
     FilaMM1(TipoFila tipo, double utilizacao);
     void InicializaFila();
-    void TrataProximoEvento();
+    void TrataProximoEvento(bool transiente, int IDRodada);
 	void ReportaStatus();
     void ResetaEstatisticasRodada();
     double EstimadorMediaDoNumeroDePessoasNaFilaDeEspera(double tempoInicioRodada);

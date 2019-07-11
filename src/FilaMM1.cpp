@@ -6,7 +6,7 @@ FilaMM1::FilaMM1(TipoFila tipo, double utilizacao){
     this->Utilizacao = utilizacao;
 }
 
-void FilaMM1::TrataProximoEvento(){
+void FilaMM1::TrataProximoEvento(bool transiente, int IDRodada){
     //Pega próximo evento da heap de eventos e o remove da heap
     Evento proximoEvento = this->Eventos.top();
     this->Eventos.pop();
@@ -23,7 +23,7 @@ void FilaMM1::TrataProximoEvento(){
     switch(proximoEvento.Tipo){
         case TipoEvento::CHEGADA : {
             //Criamos um novo freguês 
-            Fregues novoFregues = Fregues(this->TempoAtual);
+            Fregues novoFregues = Fregues(this->TempoAtual, IDRodada);
 
             //Se a fila está vazia, colocamos o freguês em serviço e geramos sua saída. Caso contrário, colocamos ele na fila de espera.
             if(this->FilaVazia()){
@@ -40,11 +40,13 @@ void FilaMM1::TrataProximoEvento(){
         case TipoEvento::SAIDA : {
             //Atribuimos um tempo de saída para o freguês que está saindo
             this->freguesEmServico.TempoSaida = this->TempoAtual;
-            //Geramos as estatísticas obtidas com a saíde desse freguês
-            this->GeraEstatisticaTempoEsperaNaFila(this->freguesEmServico);
+            if (this->freguesEmServico.IDRodada == IDRodada || transiente == true) {
+                //Geramos as estatísticas obtidas com a saíde desse freguês
+                this->GeraEstatisticaTempoEsperaNaFila(this->freguesEmServico);
+            }
 
             //Retiramos o freguês de serviço
-            this->freguesEmServico = Fregues(-1);
+            this->freguesEmServico = Fregues(-1, -1);
 
             //Checamos se há mais freguêses para serem servidos e colocamos o próximo freguês em serviço se for o caso
             this->PreparaNovoServico();

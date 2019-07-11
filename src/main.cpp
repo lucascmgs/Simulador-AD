@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
 	int n = 3200;
 	//Número default de coletas feitas (k coletas = 1 rodada de simulação)
 	int k = 100;
-	//Valor default para a semente
+	//Valor default para a semente (utiliza o horário atual do sistema)
 	int seed = time(NULL);
 	//Valor default para a utilização/taxa de chegada (rho = lambda*E[X], mas como E[X] = 1, então rho = lambda)
     double lambda = 0.2;
