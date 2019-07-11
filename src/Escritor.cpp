@@ -7,20 +7,20 @@ using namespace std;
 Escritor::Escritor(void){ }
 
 //Esta função é a responsável por "criar" o .csv em questão. 
-//Ele escreve um cabeçalho, para que eu possa me guiar quando for gerar gráficos no google sheets a partir do csv.
-std::fstream Escritor::CriaCSV(){
+//ENTRADA: string nomeDoArquivo, que será o nome do arquivo gerado. Passar o nome do arquivo sem ".csv"
+//ENTRADA: string cabecalho, que será a primeira linha do arquivo.
+//SAIDA: fstream, arquivo para ser manipulado pelas outras funções da classe
+std::fstream Escritor::CriaCSV(std::string nomeDoArquivo, std::string cabecalho){
     std::fstream arquivo;
-    arquivo.open("results.csv", ios::out | ios::app | ios::binary);
-        std::cout << "sim" << "\n";
-        arquivo << "Timestamp,Utilizacao,Politica,ICMediaTempoEspera,ICVarianciaTempoEspera(t-student),ICVarianciaTempoEspera(chi-square),ICMediaPessoas,ICVarianciaPessoas(t-student),ICVarianciaPessoas(chi-square)";
-        arquivo << "\n";
+    std::string realNomeDoArquivo = nomeDoArquivo + ".csv";
+    arquivo.open(nomeDoArquivo.c_str(), ios::out | ios::app | ios::binary);
+    std::cout << "sim" << "\n";
+    arquivo << cabecalho;
+    arquivo << "\n";
     return arquivo;
 }
 
 //Esta função imprime um vetor de entradas por linha, que no caso são as métricas coletadas em uma rodada.
-//TODO: fazer com que o numero de métricas seja definido apenas uma vez na criação da classe ao invés de *toda vez que se escreve uma linha*
-//...
-//ou não, talvez a gente queira essa flexibilidade pra fazer merda (???)
 std::fstream Escritor::EscreveLinhaEmCSV(int numeroDeMetricas, std::vector<double> entradas){
     std::fstream arquivo;
     arquivo.open("results.csv", ios::out | ios::app | ios::binary);
