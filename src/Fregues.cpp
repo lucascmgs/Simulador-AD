@@ -1,8 +1,9 @@
 #include "Fregues.hpp"
 
 //Contrutor para a classe Fregues. Passamos a ele o tempo que o freguês chegou na fila
-Fregues::Fregues(double tempoChegada){
+Fregues::Fregues(double tempoChegada, int IDRodada){
     this->TempoChegada = tempoChegada;
+    this->IDRodada = IDRodada;
 }
 
 

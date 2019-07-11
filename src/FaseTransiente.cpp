@@ -28,7 +28,7 @@ void FaseTransiente::RodaFaseTransiente(){
 
     //Enquanto estivermos em fase transiente, tratamos o próximo evento
     while(transiente){
-        this->Fila->TrataProximoEvento();
+        this->Fila->TrataProximoEvento(true, -1);
 
         //Pegamos as métricas após tratado o último evento
         double tempoEsperaAtual = this->Fila->EstimadorMediaTempoNaFilaDeEspera();
@@ -63,7 +63,7 @@ void FaseTransiente::RodaFaseTransiente(){
     }
 
 	std::cout << "---- FIM DA FASE TRANSIENTE ----" << std::endl;
-	std::cout << "Tamanho da fase transiente: " << Fila->EstatisticasColetadasTempoEspera << " coletas\n" << std::endl;
+	std::cout << "Tamanho da fase transiente: " << Fila->EstatisticasColetadasTempoEspera << " eventos tratados\n" << std::endl;
 
     //Resetamos as métricas para podermos iniciar a simulação de fato
     this->Fila->ResetaEstatisticasRodada();

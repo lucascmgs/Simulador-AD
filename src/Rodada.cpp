@@ -4,6 +4,7 @@
 using namespace std;
 
 //Construtor
+//Originalmente cada rodada teria um escritor para registrar em arquivo os dados de cada rodada, mas por motivos de otimização do simulador nós não seguimos com a ideia
 Rodada::Rodada(int indiceRodada, int tamanhoRodada, FilaMM1 *fila){ 
     //Escritor esc = Escritor();
     this->Indice = indiceRodada;
@@ -17,7 +18,7 @@ Rodada::Rodada(int indiceRodada, int tamanhoRodada, FilaMM1 *fila){
 void Rodada::RealizaRodada(){
     //Trata os eventos enquanto faltarem coletas para terminar a rodada
     while(this->Fila->EstatisticasColetadasTempoEspera < this->Tamanho) {
-        this->Fila->TrataProximoEvento();
+        this->Fila->TrataProximoEvento(false, this->Indice);
     }
 }
 

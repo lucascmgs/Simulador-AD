@@ -10,7 +10,9 @@ class Fregues {
     double TempoDeEntradaEmServico;
     //Tempo em que o Freguês saiu da fila. Podemos calcular o tempo de serviço com (TempoSaida - TempoDeEntradaEmServiço)
     double TempoSaida;
-    Fregues(double tempoChegada);
+    //ID da rodada na qual ocorreu a chegada do freguês
+    int IDRodada;
+    Fregues(double tempoChegada, int IDRodada);
     friend std::ostream& operator<<(std::ostream& os, const Fregues& fregues);
 };
 
