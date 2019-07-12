@@ -7,8 +7,23 @@ FilaMM1::FilaMM1(TipoFila tipo, double utilizacao){
 }
 
 void FilaMM1::TrataProximoEvento(bool transiente, int IDRodada){
+
     //Pega próximo evento da heap de eventos e o remove da heap
     Evento proximoEvento = this->Eventos.top();
+    if (!this->FilaVazia()) {
+        TempoOcupado += proximoEvento.TempoOcorrencia - TempoAtual;
+    }
+
+    /* if(IDRodada < 3){
+        Escritor esc = Escritor();
+        fstream file = esc.CriaCSV("FilaMM1","Tempo Atual,Tempo Ocupado,Utilização");
+        std::vector<double> valores (3);
+        valores.at(0) = TempoAtual;
+        valores.at(1) = TempoOcupado;
+        valores.at(2) = CalculaUtilizacao();
+        file = esc.EscreveLinhaEmCSV("FilaMM1",3,valores);
+        file.close();
+    }*/
     this->Eventos.pop();
     
     double novoTempo = proximoEvento.TempoOcorrencia;
@@ -64,6 +79,10 @@ void FilaMM1::TrataProximoEvento(bool transiente, int IDRodada){
 //Caso seja necessário checar se a fila já está inicializada
 bool FilaMM1::ChecaSeFilaInicializada(){
     return this->inicializada;
+}
+
+double FilaMM1::CalculaUtilizacao(){
+    return TempoOcupado/TempoAtual;
 }
 
 //Se ainda não está inicializada, geramos uma chegada inicial e settamos a fila como inicializada

@@ -4,6 +4,7 @@
 #include<queue>
 #include<iostream>
 #include "Fregues.hpp"
+#include "Escritor.hpp"
 #include "Evento.hpp"
 #include "GeradorAleatorio.hpp"
 
@@ -22,6 +23,9 @@ class FilaMM1{
     //Número de estatísticas já coletadas numa rodada
     int EstatisticasColetadasTempoEspera = 0;
 
+    //Tempo ocupado na fila
+    double TempoOcupado = 0.0;
+
     //Fregues que está atualmente em serviço
     Fregues freguesEmServico = Fregues(-1, -1);
     //Lista de fregueses presentes na fila de espera
@@ -34,6 +38,7 @@ class FilaMM1{
     void TrataProximoEvento(bool transiente, int IDRodada);
 	void ReportaStatus();
     void ResetaEstatisticasRodada();
+    double CalculaUtilizacao();
     double EstimadorMediaDoNumeroDePessoasNaFilaDeEspera(double tempoInicioRodada);
     double EstimadorMediaDosQuadradosDeNumerosDePessoasNaFilaDeEspera(double tempoInicioRodada);
     double EstimadorMediaTempoNaFilaDeEspera();
