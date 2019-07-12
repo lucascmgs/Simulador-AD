@@ -53,7 +53,7 @@ void FaseTransiente::RodaFaseTransiente(){
             deltaEstavelNumeroPessoas++;
         }
         //Se, em 1000 eventos tratados em sequência, nenhum delta mudar, teremos terminado nossa fase transiente
-        if(deltaEstavelTempoEspera > 1000 && deltaEstavelNumeroPessoas > 1000){
+        if(deltaEstavelTempoEspera > 2877 && deltaEstavelNumeroPessoas > 2877){
             transiente = false;
         } else {
             //Atualizamos as métricas para os eventos anteriores

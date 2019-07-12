@@ -152,8 +152,8 @@ void Simulacao::GeraIntervalosDeConfianca() {
 void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 	//Instancia um escritor, que escreve no arquivo de saída. Nome e cabeçalho definidos por strings internas à função.
 	Escritor esc = Escritor();
-	std::string nomeDoArquivo = "default";
-	std::string cabecalhoDoArquivo = "kmin,rho,politica,lower,V(W),upper,precision,lower,centrochi_W,upper,precision";
+	std::string nomeDoArquivo = "metricas";
+	std::string cabecalhoDoArquivo = "k,rho,politica,tamanho da fase trans.,E[W] Analítico,E[W] Amostral,V[W] Analítico,V[W]Amostral,E[Nq] Analítico,E[Nq] Amostral,V[Nq] Analítico,V[Nq] Amostral";
 	fstream file = esc.CriaCSV(nomeDoArquivo,cabecalhoDoArquivo);
 	
 	/*string hour;
@@ -166,31 +166,21 @@ void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 	double timestamp = atof(conversao);*/
 
 	//Vetor de métricas coletadas em uma simulação com posições correspondentes aos títulos da primeira linha
-	std::vector<double> valores (11);
+	std::vector<double> valores (12);
 	//Carrega o vetor, posição a posição, com as métricas desejadas.
 	/*kmin*/									valores.at(0) = k; 	
 	/*valor de rho*/							valores.at(1) = Lambda; 	
-	/*lower IC pela T-Student*/					valores.at(3) = Media_W; 	
-	/*Variância do tempo de espera na fila*/	valores.at(4) = Variancia_W;
-	/*Upper IC com T-Student*/					valores.at(5) = 0; 	
-	/*Precisão do IC com T-Student*/			valores.at(6) = 0; 								
-	/*lower IC pela Chi-Square*/				valores.at(7) = 0; 					
-	/*Variância estimada pela Chi-Square*/		valores.at(8) = 0;				
-	/*upper IC com Chi-Square*/					valores.at(9) = 0;				
-	/*Precisão do IC com Chi-Square*/			valores.at(10) = 0;
+	/*lower IC pela T-Student*/					valores.at(2) = PoliticaAtendimento; 	
+	/*Variância do tempo de espera na fila*/	valores.at(3) = 0;
+	/*Upper IC com T-Student*/					valores.at(4) = Lambda/(1-Lambda); 	
+	/*Precisão do IC com T-Student*/			valores.at(5) = Media_W; 								
+	/*lower IC pela Chi-Square*/				valores.at(6) = (PoliticaAtendimento==0 ? (2*Lambda-(Lambda*Lambda))/((1-Lambda)*(1-Lambda)) : (2*Lambda - pow(Lambda, 2) + pow(Lambda, 3))/(pow(1-Lambda, 3))) ; 					
+	/*Variância estimada pela Chi-Square*/		valores.at(7) = Variancia_W;				
+	/*upper IC com Chi-Square*/					valores.at(8) = (Lambda*Lambda)/(1-Lambda);				
+	/*Precisão do IC com Chi-Square*/			valores.at(9) = Media_Nq;				
+	/*Precisão do IC com Chi-Square*/			valores.at(10) = (pow(Lambda, 2)+pow(Lambda, 3)-pow(Lambda, 4))/pow((1-Lambda), 2);
+	/*Precisão do IC com Chi-Square*/			valores.at(11) = Variancia_Nq;
 	
-	//Política em vigor na simulação
-	switch(fila.Tipo){
-		case TipoFila::FCFS:
-			valores.at(2) = 0;
-			break;
-		case TipoFila::LCFS:
-			valores.at(2) = 1;
-			break;
-		default:
-			valores.at(2) = 0;
-			break;
-	}
 
-	file = esc.EscreveLinhaEmCSV(nomeDoArquivo, 11, valores);	   
+	file = esc.EscreveLinhaEmCSV(nomeDoArquivo, 12, valores);	   
 }
