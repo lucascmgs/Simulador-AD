@@ -1,11 +1,12 @@
 #include "Simulacao.hpp"
 
-Simulacao::Simulacao(int n, int k, int seed, double lambda, int politicaAtendimento) {
+Simulacao::Simulacao(int n, int k, int seed, double lambda, int politicaAtendimento, std::string output) {
     this->n = n;
     this->k = k;
     this->Seed = seed;
     this->Lambda = lambda;
 	this->PoliticaAtendimento = politicaAtendimento;
+	this->Output = output;
 }
 
 void Simulacao::RodaSimulacao() {
@@ -91,11 +92,11 @@ void Simulacao::GeraEstatisticaSimulacao() {
 	std::cout << "* Variância das Variâncias de Nq: " << Variancia_Variancias_Nq << std::endl;
 
 	//Valores analíticos (desenvolvimento das contas está no relatório)
-	double EWAnalitico = Lambda/(1-Lambda); 
-	double VWAnaliticoFCFS = (2*Lambda-(Lambda*Lambda))/((1-Lambda)*(1-Lambda));
-	double VWAnaliticoLCFS = (2*Lambda - pow(Lambda, 2) + pow(Lambda, 3))/(pow(1-Lambda, 3)); 
-	double ENqAnalitico = (Lambda*Lambda)/(1-Lambda);
-	double VNqAnalitico = (pow(Lambda, 2)+pow(Lambda, 3)-pow(Lambda, 4))/pow((1-Lambda), 2);
+	EWAnalitico = Lambda/(1-Lambda); 
+	VWAnaliticoFCFS = (2*Lambda-(Lambda*Lambda))/((1-Lambda)*(1-Lambda));
+	VWAnaliticoLCFS = (2*Lambda - pow(Lambda, 2) + pow(Lambda, 3))/(pow(1-Lambda, 3)); 
+	ENqAnalitico = (Lambda*Lambda)/(1-Lambda);
+	VNqAnalitico = (pow(Lambda, 2)+pow(Lambda, 3)-pow(Lambda, 4))/pow((1-Lambda), 2);
 	std::cout << "* Valor Analítico para E[W]: " << EWAnalitico << std::endl;
 	std::cout << "* Valor Analítico para V[W]: " << (PoliticaAtendimento==0 ? VWAnaliticoFCFS : VWAnaliticoLCFS) << std::endl;
 	std::cout << "* Valor Analítico para E[Nq]: " << ENqAnalitico << std::endl;
@@ -104,56 +105,56 @@ void Simulacao::GeraEstatisticaSimulacao() {
 
 void Simulacao::GeraIntervalosDeConfianca() {
     //Para E[W], t-student
-	double Lower = Media_W - t * sqrt(Variancia_Medias_W)/sqrt(n);
-	double Upper = Media_W + t * sqrt(Variancia_Medias_W)/sqrt(n);
-	double precisao = (Upper-Lower)/(Upper+Lower);
+	Lower_t_EW = Media_W - t * sqrt(Variancia_Medias_W)/sqrt(n);
+	Upper_t_EW = Media_W + t * sqrt(Variancia_Medias_W)/sqrt(n);
+	precisao_t_EW = (Upper_t_EW-Lower_t_EW)/(Upper_t_EW+Lower_t_EW);
 	std::cout << "\n---- IC E[W] (t-Student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << Media_W << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
+	std::cout << "[" << Lower_t_EW << ", " << Media_W << ", " << Upper_t_EW << " | Precisão: "<< precisao_t_EW << "]\n" << std::endl;
 
 	//Para V(W), chi-quadrado
-	Lower = ((n-1)*Variancia_W)/chiSuperior;
-	Upper = ((n-1)*Variancia_W)/chiInferior;
-	precisao = (Upper-Lower)/(Upper+Lower);
-	double centroChi = (Upper+Lower)/2;
+	Lower_chi_VW = ((n-1)*Variancia_W)/chiSuperior;
+	Upper_chi_VW = ((n-1)*Variancia_W)/chiInferior;
+	precisao_chi_VW = (Upper_chi_VW-Lower_chi_VW)/(Upper_chi_VW+Lower_chi_VW);
+	centroChi_VW = (Upper_chi_VW+Lower_chi_VW)/2;
 	std::cout << "---- IC V(W) (chi-quadrado) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << centroChi << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
+	std::cout << "[" << Lower_chi_VW << ", " << centroChi_VW << ", " << Upper_chi_VW << " | Precisão: "<< precisao_chi_VW << "]\n" << std::endl;
 
     //Para V(W), t-student
-	Lower = Variancia_W - t * sqrt(Variancia_Variancias_W)/sqrt(n);
-	Upper = Variancia_W + t * sqrt(Variancia_Variancias_W)/sqrt(n);
-	precisao = (Upper-Lower)/(Upper+Lower);
+	Lower_t_VW = Variancia_W - t * sqrt(Variancia_Variancias_W)/sqrt(n);
+	Upper_t_VW = Variancia_W + t * sqrt(Variancia_Variancias_W)/sqrt(n);
+	precisao_t_VW = (Upper_t_VW-Lower_t_VW)/(Upper_t_VW+Lower_t_VW);
 	std::cout << "---- IC V(W) (t-Student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << Variancia_W << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;   
+	std::cout << "[" << Lower_t_VW << ", " << Variancia_W << ", " << Upper_t_VW << " | Precisão: "<< precisao_t_VW << "]\n" << std::endl;   
 
     //Para E[Nq] 
-	Lower = Media_Nq - t*sqrt(Variancia_Medias_Nq)/sqrt(n);
-	Upper = Media_Nq + t*sqrt(Variancia_Medias_Nq)/sqrt(n);
-	precisao = (Upper-Lower)/(Upper+Lower);
+	Lower_t_ENq = Media_Nq - t*sqrt(Variancia_Medias_Nq)/sqrt(n);
+	Upper_t_ENq = Media_Nq + t*sqrt(Variancia_Medias_Nq)/sqrt(n);
+	precisao_t_ENq = (Upper_t_ENq-Lower_t_ENq)/(Upper_t_ENq+Lower_t_ENq);
 	std::cout << "---- IC E[Nq] (t-Student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << Media_Nq << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
+	std::cout << "[" << Lower_t_ENq << ", " << Media_Nq << ", " << Upper_t_ENq << " | Precisão: "<< precisao_t_ENq << "]\n" << std::endl;
 
 	//Para V(Nq), chi-quadrado
-	Lower = ((n-1)*Variancia_Nq)/chiSuperior;
-	Upper = ((n-1)*Variancia_Nq)/chiInferior;
-	precisao = (Upper-Lower)/(Upper+Lower);
-	centroChi = (Upper+Lower)/2;
+	Lower_chi_VNq = ((n-1)*Variancia_Nq)/chiSuperior;
+	Upper_chi_VNq = ((n-1)*Variancia_Nq)/chiInferior;
+	precisao_chi_VNq = (Upper_chi_VNq-Lower_chi_VNq)/(Upper_chi_VNq+Lower_chi_VNq);
+	centroChi_VNq = (Upper_chi_VNq+Lower_chi_VNq)/2;
 	std::cout << "---- IC V(Nq) (chi-quadrado) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << centroChi << ", " << Upper << " | Precisão: "<< precisao << "]\n" << std::endl;
+	std::cout << "[" << Lower_chi_VNq << ", " << centroChi_VNq << ", " << Upper_chi_VNq << " | Precisão: "<< precisao_chi_VNq << "]\n" << std::endl;
 
     //Para V(Nq), t-student	
-	Lower = Variancia_Nq - t * sqrt(Variancia_Variancias_Nq)/sqrt(n);
-	Upper = Variancia_Nq + t * sqrt(Variancia_Variancias_Nq)/sqrt(n);
-	precisao = (Upper-Lower)/(Upper+Lower);
+	Lower_t_VNq = Variancia_Nq - t * sqrt(Variancia_Variancias_Nq)/sqrt(n);
+	Upper_t_VNq = Variancia_Nq + t * sqrt(Variancia_Variancias_Nq)/sqrt(n);
+	precisao_t_Vnq = (Upper_t_VNq-Lower_t_VNq)/(Upper_t_VNq+Lower_t_VNq);
 	std::cout << "---- IC V(Nq) (t-student) ----" << std::endl;
-	std::cout << "[" << Lower << ", " << Variancia_Nq << ", " << Upper << " | Precisão: "<< precisao <<"]\n" << std::endl;   
+	std::cout << "[" << Lower_t_VNq << ", " << Variancia_Nq << ", " << Upper_t_VNq << " | Precisão: "<< precisao_t_Vnq <<"]\n" << std::endl;   
 }
 
 //Escreve as métricas de uma simulação em um arquivo .csv para futuro tratamento dos dados coletados
 void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 	//Instancia um escritor, que escreve no arquivo de saída. Nome e cabeçalho definidos por strings internas à função.
 	Escritor esc = Escritor();
-	std::string nomeDoArquivo = "default";
-	std::string cabecalhoDoArquivo = "kmin,rho,politica,lower,V(W),upper,precision,lower,centrochi_W,upper,precision";
+	std::string nomeDoArquivo = Output;
+	std::string cabecalhoDoArquivo = "k,Utilização,Política,E[W] Analítico,Lower,E[W],Upper,Precisão,V(W) Analítico,Lower,V(W),Upper,Precisão,Lower,Centro,Upper,Precisão";
 	fstream file = esc.CriaCSV(nomeDoArquivo,cabecalhoDoArquivo);
 	
 	/*string hour;
@@ -166,31 +167,39 @@ void Simulacao::ColetaEstatisticasDaSimulacao(FilaMM1 fila, tm * simTime) {
 	double timestamp = atof(conversao);*/
 
 	//Vetor de métricas coletadas em uma simulação com posições correspondentes aos títulos da primeira linha
-	std::vector<double> valores (11);
+	std::vector<double> valores (17);
 	//Carrega o vetor, posição a posição, com as métricas desejadas.
 	/*kmin*/									valores.at(0) = k; 	
-	/*valor de rho*/							valores.at(1) = Lambda; 	
-	/*lower IC pela T-Student*/					valores.at(3) = Media_W; 	
-	/*Variância do tempo de espera na fila*/	valores.at(4) = Variancia_W;
-	/*Upper IC com T-Student*/					valores.at(5) = 0; 	
-	/*Precisão do IC com T-Student*/			valores.at(6) = 0; 								
-	/*lower IC pela Chi-Square*/				valores.at(7) = 0; 					
-	/*Variância estimada pela Chi-Square*/		valores.at(8) = 0;				
-	/*upper IC com Chi-Square*/					valores.at(9) = 0;				
-	/*Precisão do IC com Chi-Square*/			valores.at(10) = 0;
+	/*valor de rho*/							valores.at(1) = Lambda; 
+	/*Valor analítico para E[W]*/				valores.at(3) = EWAnalitico; 
+	/*Lower IC t-student E[W] */				valores.at(4) = Lower_t_EW;
+	/*Centro IC t-student E[W] */				valores.at(5) = Media_W;
+	/*Upper IC t-student E[W] */				valores.at(6) = Upper_t_EW;
+	/*Precisão IC t-student E[W] */				valores.at(7) = precisao_t_EW;
+	/*Lower IC t-student V(W)*/					valores.at(9) = Lower_t_VW;
+	/*Lower IC t-student V(W)*/					valores.at(10) = Variancia_W;
+	/*Upper IC t-student V(W)*/					valores.at(11) = Upper_t_VW; 	
+	/*Precisão IC t-student V(W)*/				valores.at(12) = precisao_t_VW; 								
+	/*Lower IC Chi-Square V(W)*/				valores.at(13) = Lower_chi_VW; 					
+	/*Variância estimada Chi-Square (centro)*/	valores.at(14) = centroChi_VW;				
+	/*Upper IC Chi-Square V(W)*/				valores.at(15) = Upper_chi_VW;				
+	/*Precisão do IC com Chi-Square*/			valores.at(16) = precisao_chi_VW;
 	
 	//Política em vigor na simulação
 	switch(fila.Tipo){
 		case TipoFila::FCFS:
 			valores.at(2) = 0;
+			valores.at(8) = VWAnaliticoFCFS;
 			break;
 		case TipoFila::LCFS:
 			valores.at(2) = 1;
+			valores.at(8) = VWAnaliticoLCFS;
 			break;
 		default:
 			valores.at(2) = 0;
+			valores.at(8) = VWAnaliticoFCFS;
 			break;
 	}
 
-	file = esc.EscreveLinhaEmCSV(nomeDoArquivo, 11, valores);	   
+	file = esc.EscreveLinhaEmCSV(nomeDoArquivo, 17, valores);	   
 }

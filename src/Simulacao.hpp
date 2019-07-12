@@ -30,6 +30,8 @@ class Simulacao {
     double Lambda = 0;
 	//Política de atendimento (0 para FCFS e 1 para LCFS)
 	int PoliticaAtendimento = 0;
+	//Nome do arquivo de saída com resultados
+	std::string Output;
     
     //Estatísticas da Simulação
 	//Para W
@@ -59,7 +61,24 @@ class Simulacao {
 	double chiInferior = 3044.130201771;
 	double chiSuperior = 3357.658239650;
 
-    Simulacao(int n, int k, int seed, double lambda, int politicaAtendimento);
+	//Variáveis referentes ao cálculo dos ICs
+	//Para t-Student, IC de E[W]
+	double Lower_t_EW, Upper_t_EW, precisao_t_EW;
+	//Para chi-square, IC de V[W]
+	double Lower_chi_VW, Upper_chi_VW, precisao_chi_VW, centroChi_VW;
+	//Para t-Student, IC de V[W]
+	double Lower_t_VW, Upper_t_VW, precisao_t_VW;
+	//Para t-Student, IC de E[Nq]
+	double Lower_t_ENq, Upper_t_ENq, precisao_t_ENq;
+	//Para chi-square, IC de V(Nq)
+	double Lower_chi_VNq, Upper_chi_VNq, precisao_chi_VNq, centroChi_VNq;
+	//Para t-Student, IC de V(Nq)
+	double Lower_t_VNq, Upper_t_VNq, precisao_t_Vnq;
+
+	//Valores Analíticos
+	double EWAnalitico, VWAnaliticoFCFS, VWAnaliticoLCFS, ENqAnalitico, VNqAnalitico;
+	
+    Simulacao(int n, int k, int seed, double lambda, int politicaAtendimento, std::string output);
     void RodaSimulacao();
     void GeraEstatisticaSimulacao();
     void GeraIntervalosDeConfianca();
